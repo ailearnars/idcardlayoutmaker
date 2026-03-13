@@ -28,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_school'])) {
         'school_address' => sanitize_textarea_field($_POST['school_address']),
         'school_contact' => sanitize_text_field($_POST['school_contact']),
         'school_email'   => sanitize_email($_POST['school_email']),
+        'school_website' => esc_url_raw($_POST['school_website']),
     );
 
     if ($school_id > 0) {
@@ -122,6 +123,11 @@ if ($action === 'list') {
                         <label>Email Address</label>
                         <input type="email" name="school_email" value="<?php echo esc_attr($school->school_email ?? ''); ?>" class="saas-input">
                     </div>
+                </div>
+
+                <div class="saas-form-group">
+                    <label>School Website URL</label>
+                    <input type="url" name="school_website" value="<?php echo esc_attr($school->school_website ?? ''); ?>" class="saas-input" placeholder="https://...">
                 </div>
 
                 <div style="margin-top: 32px;">

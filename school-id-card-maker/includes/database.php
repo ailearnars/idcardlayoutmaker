@@ -18,6 +18,7 @@ function school_id_card_maker_create_table() {
         school_address text,
         school_contact varchar(100),
         school_email varchar(100),
+        school_website varchar(255),
         created_at datetime DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY  (id)
     ) $charset_collate;";

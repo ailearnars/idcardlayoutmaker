@@ -73,6 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_id_cards']))
                     $student->school_address = $school->school_address;
                     $student->school_contact = $school->school_contact;
                     $student->school_email = $school->school_email;
+                    $student->school_website = $school->school_website;
                 }
             }
 
