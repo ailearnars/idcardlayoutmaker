@@ -1,0 +1,356 @@
+/* Modern SaaS UI for School ID Card Maker Admin */
+
+:root {
+    --saas-primary: #4F46E5; /* Indigo 600 */
+    --saas-primary-hover: #4338CA;
+    --saas-danger: #EF4444; /* Red 500 */
+    --saas-danger-hover: #DC2626;
+    --saas-bg: #F3F4F6; /* Gray 100 */
+    --saas-card-bg: #FFFFFF;
+    --saas-text-main: #111827; /* Gray 900 */
+    --saas-text-muted: #6B7280; /* Gray 500 */
+    --saas-border: #E5E7EB; /* Gray 200 */
+    --saas-radius: 8px;
+    --saas-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --saas-font: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Global Wrap Override */
+.wrap.saas-wrap {
+    font-family: var(--saas-font);
+    color: var(--saas-text-main);
+    background-color: var(--saas-bg);
+    margin: 20px 20px 0 0;
+    padding: 24px;
+    border-radius: var(--saas-radius);
+    min-height: calc(100vh - 80px);
+}
+
+.saas-wrap h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--saas-text-main);
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--saas-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Typography */
+.saas-wrap h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--saas-text-main);
+    margin-top: 32px;
+    margin-bottom: 16px;
+}
+
+.saas-wrap p {
+    color: var(--saas-text-muted);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Buttons */
+.saas-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: var(--saas-radius);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    line-height: 1.5;
+}
+
+.saas-btn-primary {
+    background-color: var(--saas-primary);
+    color: white !important;
+}
+
+.saas-btn-primary:hover {
+    background-color: var(--saas-primary-hover);
+    box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3);
+}
+
+.saas-btn-secondary {
+    background-color: white;
+    color: var(--saas-text-main) !important;
+    border: 1px solid var(--saas-border);
+}
+
+.saas-btn-secondary:hover {
+    background-color: #F9FAFB;
+    border-color: #D1D5DB;
+}
+
+.saas-btn-danger {
+    background-color: white;
+    color: var(--saas-danger) !important;
+    border: 1px solid var(--saas-danger);
+}
+
+.saas-btn-danger:hover {
+    background-color: var(--saas-danger);
+    color: white !important;
+}
+
+.saas-btn-small {
+    padding: 4px 10px;
+    font-size: 13px;
+}
+
+/* Cards & Layouts */
+.saas-card {
+    background: var(--saas-card-bg);
+    border: 1px solid var(--saas-border);
+    border-radius: var(--saas-radius);
+    padding: 24px;
+    box-shadow: var(--saas-shadow);
+    margin-bottom: 24px;
+}
+
+.saas-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+/* Forms */
+.saas-form-group {
+    margin-bottom: 20px;
+}
+
+.saas-form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--saas-text-main);
+}
+
+.saas-input,
+.saas-select,
+.saas-textarea {
+    width: 100%;
+    max-width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--saas-text-main);
+    background-color: #fff;
+    border: 1px solid var(--saas-border);
+    border-radius: var(--saas-radius);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.saas-input:focus,
+.saas-select:focus,
+.saas-textarea:focus {
+    outline: 0;
+    border-color: var(--saas-primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.saas-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.saas-radio-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: normal;
+    cursor: pointer;
+    background: #f9fafb;
+    padding: 12px;
+    border: 1px solid var(--saas-border);
+    border-radius: var(--saas-radius);
+    transition: all 0.2s ease;
+}
+
+.saas-radio-label:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+}
+
+.saas-radio-label input[type="radio"] {
+    margin: 0;
+    width: 16px;
+    height: 16px;
+    accent-color: var(--saas-primary);
+}
+
+/* Tables */
+.saas-table-container {
+    background: var(--saas-card-bg);
+    border: 1px solid var(--saas-border);
+    border-radius: var(--saas-radius);
+    overflow: hidden;
+    box-shadow: var(--saas-shadow);
+}
+
+.saas-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.saas-table th {
+    background-color: #F9FAFB;
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--saas-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--saas-border);
+}
+
+.saas-table td {
+    padding: 16px;
+    font-size: 14px;
+    color: var(--saas-text-main);
+    border-bottom: 1px solid var(--saas-border);
+    vertical-align: middle;
+}
+
+.saas-table tbody tr:hover {
+    background-color: #F9FAFB;
+}
+
+.saas-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.saas-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.saas-actions a, .saas-actions button {
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.saas-action-edit { color: var(--saas-primary); }
+.saas-action-edit:hover { color: var(--saas-primary-hover); text-decoration: underline; }
+
+.saas-action-generate { color: #10B981; } /* Green 500 */
+.saas-action-generate:hover { color: #059669; text-decoration: underline; }
+
+.saas-action-delete { color: var(--saas-danger); }
+.saas-action-delete:hover { color: var(--saas-danger-hover); text-decoration: underline; }
+
+/* Template Manager Overrides */
+.saas-template-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 24px;
+}
+
+.saas-template-card {
+    background: var(--saas-card-bg);
+    border: 1px solid var(--saas-border);
+    border-radius: var(--saas-radius);
+    padding: 20px;
+    text-align: center;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.saas-template-card:hover {
+    box-shadow: var(--saas-shadow);
+    transform: translateY(-2px);
+    border-color: var(--saas-primary);
+}
+
+.saas-template-card h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 16px 0;
+    color: var(--saas-text-main);
+}
+
+/* Pagination */
+.saas-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background: var(--saas-card-bg);
+    border-top: 1px solid var(--saas-border);
+}
+
+.saas-pagination-info {
+    font-size: 14px;
+    color: var(--saas-text-muted);
+}
+
+.saas-pagination-links {
+    display: flex;
+    gap: 4px;
+}
+
+.saas-pagination-links a,
+.saas-pagination-links span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    font-size: 14px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--saas-text-main);
+    border: 1px solid var(--saas-border);
+    background: #fff;
+}
+
+.saas-pagination-links a:hover {
+    background: #F9FAFB;
+}
+
+.saas-pagination-links span.current {
+    background: var(--saas-primary);
+    color: #fff;
+    border-color: var(--saas-primary);
+}
+
+/* Notices */
+.saas-notice {
+    padding: 12px 16px;
+    border-radius: var(--saas-radius);
+    margin-bottom: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.saas-notice-success {
+    background-color: #ECFDF5;
+    color: #065F46;
+    border: 1px solid #10B981;
+}
+
+.saas-notice-error {
+    background-color: #FEF2F2;
+    color: #991B1B;
+    border: 1px solid #EF4444;
+}
