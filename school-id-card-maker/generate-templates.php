@@ -37,7 +37,8 @@ for ($i = 1; $i <= 50; $i++) {
         </div>
     </div>
     <div class="footer">
-        <p class="address"><?php echo esc_html(\$student->address); ?></p>
+        <p class="school-address"><?php echo nl2br(esc_html(get_option('school_id_card_default_school_address', '123 Default St.'))); ?></p>
+        <p class="school-contact"><?php echo esc_html(get_option('school_id_card_default_school_contact', '123-456-7890')); ?> | <?php echo esc_html(get_option('school_id_card_default_school_email', 'info@school.com')); ?></p>
     </div>
 </div>
 EOD;
@@ -72,7 +73,8 @@ for ($i = 1; $i <= 50; $i++) {
         </div>
     </div>
     <div class="footer">
-        <p class="address"><?php echo esc_html(\$student->address); ?></p>
+        <p class="school-address"><?php echo nl2br(esc_html(get_option('school_id_card_default_school_address', '123 Default St.'))); ?></p>
+        <p class="school-contact"><?php echo esc_html(get_option('school_id_card_default_school_contact', '123-456-7890')); ?> | <?php echo esc_html(get_option('school_id_card_default_school_email', 'info@school.com')); ?></p>
     </div>
 </div>
 EOD;

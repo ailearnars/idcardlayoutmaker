@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_id_cards']))
 
     $orientation = sanitize_file_name($_POST['orientation']);
     $template_name = sanitize_file_name($_POST['template']);
+    $format = isset($_POST['format']) ? sanitize_text_field($_POST['format']) : 'pdf';
 
     // Validate orientation explicitly
     if (!in_array($orientation, ['horizontal', 'vertical'])) {
@@ -174,8 +175,8 @@ $selected_student_id = isset($_GET['student_id']) ? intval($_GET['student_id']) 
             <tr>
                 <th scope="row"><label>Export Format</label></th>
                 <td>
-                    <p><label><input type="radio" name="format" value="pdf" checked> PDF (DOMPDF)</label></p>
-                    <p class="description">Currently only PDF export is supported in this basic version.</p>
+                    <p><label><input type="radio" name="format" value="pdf" checked> PDF</label></p>
+                    <p><label><input type="radio" name="format" value="png"> PNG (Image Archive)</label></p>
                 </td>
             </tr>
         </table>
