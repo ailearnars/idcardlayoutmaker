@@ -209,9 +209,25 @@ function school_id_card_maker_process_generation() {
                 $card_html = str_replace('{{STUDENT_NAME}}', esc_html($student->student_name ?? ''), $card_html);
                 $s_name = !empty($student->school_name) ? $student->school_name : get_option('school_id_card_default_school_name', 'Default School');
                 $card_html = str_replace('{{SCHOOL_NAME}}', esc_html($s_name), $card_html);
+
+                $s_address = !empty($student->school_address) ? $student->school_address : get_option('school_id_card_default_school_address', '');
+                $card_html = str_replace('{{SCHOOL_ADDRESS}}', esc_html($s_address), $card_html);
+
+                $s_contact = !empty($student->school_contact) ? $student->school_contact : get_option('school_id_card_default_school_contact', '');
+                $card_html = str_replace('{{SCHOOL_CONTACT}}', esc_html($s_contact), $card_html);
+
+                $s_email = !empty($student->school_email) ? $student->school_email : get_option('school_id_card_default_school_email', '');
+                $card_html = str_replace('{{SCHOOL_EMAIL}}', esc_html($s_email), $card_html);
+
                 $card_html = str_replace('{{CLASS_INFO}}', esc_html(($student->class ?? '') . ' ' . ($student->section ?? '')), $card_html);
                 $card_html = str_replace('{{ROLL_NO}}', esc_html($student->roll_no ?? ''), $card_html);
                 $card_html = str_replace('{{DOB}}', esc_html($student->dob ?? ''), $card_html);
+                $card_html = str_replace('{{BLOOD_GROUP}}', esc_html($student->blood_group ?? ''), $card_html);
+                $card_html = str_replace('{{ADMISSION_NO}}', esc_html($student->admission_no ?? ''), $card_html);
+                $card_html = str_replace('{{FATHER_NAME}}', esc_html($student->father_name ?? ''), $card_html);
+                $card_html = str_replace('{{MOTHER_NAME}}', esc_html($student->mother_name ?? ''), $card_html);
+                $card_html = str_replace('{{PHONE}}', esc_html($student->phone ?? ''), $card_html);
+                $card_html = str_replace('{{ADDRESS}}', esc_html($student->address ?? ''), $card_html);
 
                 if (!empty($student->student_photo)) {
                     $photo_replacement = '<img src="' . esc_url($student->student_photo) . '" style="width:100%; height:100%; object-fit:cover;" alt="Photo">';

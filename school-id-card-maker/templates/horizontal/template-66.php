@@ -18,6 +18,7 @@
                 <tr><td>Roll No:</td><td><?php echo esc_html($student->roll_no); ?></td></tr>
                 <tr><td>DOB:</td><td><?php echo esc_html($student->dob); ?></td></tr>
                 <tr><td>Blood Group:</td><td><?php echo esc_html($student->blood_group); ?></td></tr>
+                <?php if(!empty($student->phone)): ?><tr><td>Phone:</td><td><?php echo esc_html($student->phone); ?></td></tr><?php endif; ?>
             </table>
         </div>
     </div>

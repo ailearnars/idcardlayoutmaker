@@ -12,12 +12,13 @@
             <?php endif; ?>
         </div>
         <div class="details">
-            <h3 class="name" style="color: #005A36; font-size: 16px; margin-bottom: 12px;"><?php echo esc_html($student->student_name); ?></h3>
-            <table style="width: 80%;">
+            <h3 class="name" style="color: #005A36; font-size: 15px; margin-bottom: 6px;"><?php echo esc_html($student->student_name); ?></h3>
+            <table style="width: 85%;">
                 <tr><td>Class:</td><td><?php echo esc_html($student->class . ' ' . $student->section); ?></td></tr>
                 <tr><td>Roll No:</td><td><?php echo esc_html($student->roll_no); ?></td></tr>
                 <tr><td>DOB:</td><td><?php echo esc_html($student->dob); ?></td></tr>
                 <tr><td>Blood:</td><td><?php echo esc_html($student->blood_group); ?></td></tr>
+                <?php if(!empty($student->phone)): ?><tr><td>Phone:</td><td><?php echo esc_html($student->phone); ?></td></tr><?php endif; ?>
             </table>
         </div>
     </div>
