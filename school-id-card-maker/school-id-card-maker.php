@@ -49,6 +49,15 @@ function school_id_card_maker_admin_menu() {
 
     add_submenu_page(
         'school-id-card-maker',
+        'Manage Schools',
+        'Manage Schools',
+        'manage_options',
+        'school-id-card-maker-schools',
+        'school_id_card_maker_schools_page'
+    );
+
+    add_submenu_page(
+        'school-id-card-maker',
         'Add Student',
         'Add Student',
         'manage_options',
@@ -96,6 +105,10 @@ function school_id_card_maker_admin_menu() {
 // Include page logic
 function school_id_card_maker_student_list_page() {
     require_once SCHOOL_ID_CARD_MAKER_DIR . 'admin/student-list.php';
+}
+
+function school_id_card_maker_schools_page() {
+    require_once SCHOOL_ID_CARD_MAKER_DIR . 'admin/schools-manager.php';
 }
 
 function school_id_card_maker_add_student_page() {

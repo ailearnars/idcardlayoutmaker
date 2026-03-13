@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_id_cards']))
     }
     $class = isset($_POST['class']) ? sanitize_text_field($_POST['class']) : '';
     $section = isset($_POST['section']) ? sanitize_text_field($_POST['section']) : '';
+    $filter_school_id = isset($_POST['school_id']) ? intval($_POST['school_id']) : 0;
     $student_id = isset($_POST['student_id']) ? intval($_POST['student_id']) : 0;
 
     $is_custom_template = strpos($template_name, 'custom-') === 0;
@@ -53,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_id_cards']))
         $args = array();
         if (!empty($class)) $args['class'] = $class;
         if (!empty($section)) $args['section'] = $section;
+        if ($filter_school_id > 0) $args['school_id'] = $filter_school_id;
         $students = school_id_card_maker_get_students($args);
     }
 
@@ -61,12 +63,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_id_cards']))
     } else {
         $html = '';
         foreach ($students as $student) {
+
+            // Handle multi-school dynamic variables override for defaults in templates
+            if (!empty($student->school_id)) {
+                $school = school_id_card_maker_get_school($student->school_id);
+                if ($school) {
+                    $student->school_name = $school->school_name;
+                    $student->school_logo = $school->school_logo;
+                    $student->school_address = $school->school_address;
+                    $student->school_contact = $school->school_contact;
+                    $student->school_email = $school->school_email;
+                }
+            }
+
             if ($is_custom_template) {
                 // We use a simple replacement engine for standard fields to maintain strict security without eval() risks.
                 $card_html = $custom_template_html;
 
                 // Replace string tokens
                 $card_html = str_replace('{{STUDENT_NAME}}', esc_html($student->student_name ?? ''), $card_html);
+
+                $s_name = !empty($student->school_name) ? $student->school_name : get_option('school_id_card_default_school_name', 'Default School');
+                $card_html = str_replace('{{SCHOOL_NAME}}', esc_html($s_name), $card_html);
                 $card_html = str_replace('{{CLASS_INFO}}', esc_html(($student->class ?? '') . ' ' . ($student->section ?? '')), $card_html);
                 $card_html = str_replace('{{ROLL_NO}}', esc_html($student->roll_no ?? ''), $card_html);
                 $card_html = str_replace('{{DOB}}', esc_html($student->dob ?? ''), $card_html);
@@ -242,6 +260,20 @@ $selected_student_id = isset($_GET['student_id']) ? intval($_GET['student_id']) 
                 </div>
             <?php else : ?>
                 <h2>Bulk Generate Filters</h2>
+                <div class="saas-grid-2">
+                    <div class="saas-form-group">
+                        <label for="school_id">Filter by School</label>
+                        <select name="school_id" id="school_id" class="saas-select">
+                            <option value="">All Schools</option>
+                            <?php
+                            $schools = school_id_card_maker_get_all_schools();
+                            foreach ($schools as $s) {
+                                echo '<option value="' . esc_attr($s->id) . '">' . esc_html($s->school_name) . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
                 <div class="saas-grid-2">
                     <div class="saas-form-group">
                         <label for="class">Class</label>

@@ -9,8 +9,22 @@ function school_id_card_maker_create_table() {
     $table_name = $wpdb->prefix . 'school_students';
     $charset_collate = $wpdb->get_charset_collate();
 
+    $schools_table = $wpdb->prefix . 'school_id_schools';
+
+    $sql_schools = "CREATE TABLE $schools_table (
+        id int(9) NOT NULL AUTO_INCREMENT,
+        school_name varchar(255) NOT NULL,
+        school_logo text,
+        school_address text,
+        school_contact varchar(100),
+        school_email varchar(100),
+        created_at datetime DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY  (id)
+    ) $charset_collate;";
+
     $sql = "CREATE TABLE $table_name (
         id int(9) NOT NULL AUTO_INCREMENT,
+        school_id int(9) DEFAULT 0,
         student_name varchar(255) NOT NULL,
         student_photo text,
         admission_no varchar(100) NOT NULL,
@@ -30,5 +44,6 @@ function school_id_card_maker_create_table() {
     ) $charset_collate;";
 
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+    dbDelta( $sql_schools );
     dbDelta( $sql );
 }

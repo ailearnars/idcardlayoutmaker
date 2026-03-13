@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class="footer" style="background-color: #3F37C9; color: #ffffff;">
-        <p class="school-address" style="color: #ffffff;"><?php echo nl2br(esc_html(get_option('school_id_card_default_school_address', '123 Default St.'))); ?></p>
-        <p class="school-contact" style="color: rgba(255,255,255,0.7);"><?php echo esc_html(get_option('school_id_card_default_school_contact', '123-456-7890')); ?> | <?php echo esc_html(get_option('school_id_card_default_school_email', 'info@school.com')); ?></p>
+        <p class="school-address" style="color: #ffffff;"><?php echo nl2br(esc_html(!empty($student->school_address) ? $student->school_address : get_option("school_id_card_default_school_address", "123 Default St."))); ?></p>
+        <p class="school-contact" style="color: rgba(255,255,255,0.7);"><?php echo esc_html(!empty($student->school_contact) ? $student->school_contact : get_option("school_id_card_default_school_contact", "123-456-7890")); ?> | <?php echo esc_html(!empty($student->school_email) ? $student->school_email : get_option("school_id_card_default_school_email", "info@school.com")); ?></p>
     </div>
 </div>

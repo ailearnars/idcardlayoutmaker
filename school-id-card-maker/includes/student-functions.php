@@ -14,6 +14,9 @@ function school_id_card_maker_get_students($args = array()) {
     if (!empty($args['section'])) {
         $where .= $wpdb->prepare(" AND section = %s", $args['section']);
     }
+    if (!empty($args['school_id'])) {
+        $where .= $wpdb->prepare(" AND school_id = %d", $args['school_id']);
+    }
 
     $query = "SELECT * FROM $table_name WHERE $where ORDER BY id DESC";
 
@@ -37,6 +40,9 @@ function school_id_card_maker_get_students_count($args = array()) {
     if (!empty($args['section'])) {
         $where .= $wpdb->prepare(" AND section = %s", $args['section']);
     }
+    if (!empty($args['school_id'])) {
+        $where .= $wpdb->prepare(" AND school_id = %d", $args['school_id']);
+    }
 
     return $wpdb->get_var("SELECT COUNT(*) FROM $table_name WHERE $where");
 }
@@ -51,7 +57,7 @@ function school_id_card_maker_add_student($data) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'school_students';
 
-    $format = array('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');
+    $format = array('%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');
 
     $wpdb->insert($table_name, $data, $format);
     return $wpdb->insert_id;
@@ -61,7 +67,7 @@ function school_id_card_maker_update_student($id, $data) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'school_students';
 
-    $format = array('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');
+    $format = array('%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');
     $where = array('id' => $id);
     $where_format = array('%d');
 
@@ -71,5 +77,44 @@ function school_id_card_maker_update_student($id, $data) {
 function school_id_card_maker_delete_student($id) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'school_students';
+    return $wpdb->delete($table_name, array('id' => $id), array('%d'));
+}
+
+// -------------------
+// Schools Functions
+// -------------------
+
+function school_id_card_maker_get_all_schools() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'school_id_schools';
+    return $wpdb->get_results("SELECT * FROM $table_name ORDER BY school_name ASC");
+}
+
+function school_id_card_maker_get_school($id) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'school_id_schools';
+    return $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE id = %d", $id));
+}
+
+function school_id_card_maker_add_school($data) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'school_id_schools';
+    $format = array('%s', '%s', '%s', '%s', '%s');
+    $wpdb->insert($table_name, $data, $format);
+    return $wpdb->insert_id;
+}
+
+function school_id_card_maker_update_school($id, $data) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'school_id_schools';
+    $format = array('%s', '%s', '%s', '%s', '%s');
+    $where = array('id' => $id);
+    $where_format = array('%d');
+    return $wpdb->update($table_name, $data, $where, $format, $where_format);
+}
+
+function school_id_card_maker_delete_school($id) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'school_id_schools';
     return $wpdb->delete($table_name, array('id' => $id), array('%d'));
 }

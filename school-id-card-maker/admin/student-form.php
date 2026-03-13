@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_student_form']
     }
 
     $data = array(
+        'school_id'     => intval($_POST['school_id']),
         'student_name'  => sanitize_text_field($_POST['student_name']),
         'student_photo' => esc_url_raw($_POST['student_photo']),
         'admission_no'  => sanitize_text_field($_POST['admission_no']),
@@ -31,8 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_student_form']
         'address'       => sanitize_textarea_field($_POST['address']),
         'father_name'   => sanitize_text_field($_POST['father_name']),
         'mother_name'   => sanitize_text_field($_POST['mother_name']),
-        'school_name'   => sanitize_text_field($_POST['school_name']),
-        'school_logo'   => esc_url_raw($_POST['school_logo']),
+        'school_name'   => '', // Deprecated override
+        'school_logo'   => '', // Deprecated override
     );
 
     if ($id > 0) {
@@ -108,13 +109,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_student_form']
                     </div>
 
                     <div class="saas-form-group">
-                        <label for="school_name">School Name Override</label>
-                        <input name="school_name" type="text" id="school_name" value="<?php echo esc_attr($student->school_name ?? ''); ?>" class="saas-input" placeholder="Leave empty for default">
-                    </div>
-
-                    <div class="saas-form-group">
-                        <label for="school_logo">School Logo Override URL</label>
-                        <input name="school_logo" type="url" id="school_logo" value="<?php echo esc_url($student->school_logo ?? ''); ?>" class="saas-input" placeholder="Leave empty for default">
+                        <label for="school_id">Assign to School</label>
+                        <select name="school_id" id="school_id" class="saas-select">
+                            <option value="0">-- Default Settings / Unassigned --</option>
+                            <?php
+                            $schools = school_id_card_maker_get_all_schools();
+                            $current_school_id = isset($student->school_id) ? $student->school_id : 0;
+                            foreach ($schools as $s) {
+                                echo '<option value="' . esc_attr($s->id) . '" ' . selected($current_school_id, $s->id, false) . '>' . esc_html($s->school_name) . '</option>';
+                            }
+                            ?>
+                        </select>
                     </div>
                 </div>
             </div>
