@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
     update_option('school_id_card_default_school_address', sanitize_textarea_field($_POST['default_school_address']));
     update_option('school_id_card_default_school_contact', sanitize_text_field($_POST['default_school_contact']));
     update_option('school_id_card_default_school_email', sanitize_email($_POST['default_school_email']));
+    update_option('school_id_card_default_school_website', esc_url_raw($_POST['default_school_website']));
 
     echo '<div class="saas-notice saas-notice-success"><p>Settings saved successfully.</p></div>';
 }
@@ -26,6 +27,7 @@ $default_school_logo = get_option('school_id_card_default_school_logo', '');
 $default_school_address = get_option('school_id_card_default_school_address', '');
 $default_school_contact = get_option('school_id_card_default_school_contact', '');
 $default_school_email = get_option('school_id_card_default_school_email', '');
+$default_school_website = get_option('school_id_card_default_school_website', '');
 ?>
 
 <div class="wrap saas-wrap">
@@ -63,6 +65,11 @@ $default_school_email = get_option('school_id_card_default_school_email', '');
                     <label for="default_school_email">Default Email</label>
                     <input name="default_school_email" type="email" id="default_school_email" value="<?php echo esc_attr($default_school_email); ?>" class="saas-input">
                 </div>
+            </div>
+
+            <div class="saas-form-group">
+                <label for="default_school_website">Default Website</label>
+                <input name="default_school_website" type="url" id="default_school_website" value="<?php echo esc_attr($default_school_website); ?>" class="saas-input" placeholder="https://...">
             </div>
 
             <div style="margin-top: 32px;">

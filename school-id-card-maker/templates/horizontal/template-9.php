@@ -1,28 +1,39 @@
-<div class="id-card horizontal template-9" style="background-color: #f0f8ff;">
-    <div class="header">
-        <?php if (!empty($student->school_logo)): ?>
-            <img src="<?php echo esc_url($student->school_logo); ?>" class="logo" alt="Logo">
-        <?php endif; ?>
-        <h2 class="school-name"><?php echo esc_html(!empty($student->school_name) ? $student->school_name : get_option('school_id_card_default_school_name', 'Default School')); ?></h2>
-    </div>
-    <div class="body">
-        <div class="photo-container">
+<div class="id-card horizontal template-9" style="background-color: #ffffff;">
+    <div class="header" style="border: none; text-align: left; padding-left: 20px; background: #fff;">
+                <h2 class="school-name" style="color: #333333; font-weight: normal;"><?php echo esc_html(!empty($student->school_name) ? $student->school_name : get_option("school_id_card_default_school_name", "Default School")); ?></h2>
+            </div>
+    <div class="body" style="background-color: #ffffff;">
+        <div class="photo-container" style="top: 15px; left: 20px; border: none; box-shadow: none;">
             <?php if (!empty($student->student_photo)): ?>
-                <img src="<?php echo esc_url($student->student_photo); ?>" class="photo" alt="Photo">
+                <img src="<?php echo esc_url($student->student_photo); ?>" class="photo" alt="Photo" style="object-fit: cover;">
             <?php else: ?>
-                <div class="photo-placeholder">Photo</div>
+                <div class="photo-placeholder" style="line-height: 105px;">Photo</div>
             <?php endif; ?>
         </div>
-        <div class="details">
-            <h3 class="name"><?php echo esc_html($student->student_name); ?></h3>
-            <p><strong>Class:</strong> <?php echo esc_html($student->class . ' ' . $student->section); ?></p>
-            <p><strong>Roll No:</strong> <?php echo esc_html($student->roll_no); ?></p>
-            <p><strong>DOB:</strong> <?php echo esc_html($student->dob); ?></p>
-            <p><strong>Blood Group:</strong> <?php echo esc_html($student->blood_group); ?></p>
+        <div class="details" style="top: 15px; left: 120px;">
+            <h3 class="name" style="color: #C8102E; border-color: #C8102E;"><?php echo esc_html($student->student_name); ?></h3>
+            <table>
+                <tr><td>Class:</td><td><?php echo esc_html($student->class . ' ' . $student->section); ?></td></tr>
+                <tr><td>Roll No:</td><td><?php echo esc_html($student->roll_no); ?></td></tr>
+                <tr><td>DOB:</td><td><?php echo esc_html($student->dob); ?></td></tr>
+                <tr><td>Blood Group:</td><td><?php echo esc_html($student->blood_group); ?></td></tr>
+            </table>
         </div>
     </div>
-    <div class="footer">
-        <p class="school-address"><?php echo nl2br(esc_html(get_option('school_id_card_default_school_address', '123 Default St.'))); ?></p>
-        <p class="school-contact"><?php echo esc_html(get_option('school_id_card_default_school_contact', '123-456-7890')); ?> | <?php echo esc_html(get_option('school_id_card_default_school_email', 'info@school.com')); ?></p>
+    <div class="footer" style="background-color: #333333; color: #ffffff;">
+        <p class="school-address" style="color: #ffffff;"><?php echo nl2br(esc_html(!empty($student->school_address) ? $student->school_address : get_option("school_id_card_default_school_address", "123 Default St."))); ?></p>
+        <p class="school-contact" style="color: rgba(255,255,255,0.7);"><?php
+            $c_info = [];
+            $sc = !empty($student->school_contact) ? $student->school_contact : get_option("school_id_card_default_school_contact", "123-456-7890");
+            if($sc) $c_info[] = $sc;
+
+            $se = !empty($student->school_email) ? $student->school_email : get_option("school_id_card_default_school_email", "info@school.com");
+            if($se) $c_info[] = $se;
+
+            $sw = !empty($student->school_website) ? $student->school_website : get_option("school_id_card_default_school_website", "");
+            if($sw) $c_info[] = $sw;
+
+            echo esc_html(implode(" | ", $c_info));
+        ?></p>
     </div>
 </div>
