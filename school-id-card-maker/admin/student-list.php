@@ -92,7 +92,17 @@ $total_pages = ceil($total_students / $limit);
                                 <span class="edit"><a href="?page=school-id-card-maker-add&id=<?php echo esc_attr($student->id); ?>">Edit</a> | </span>
                                 <span class="delete"><a href="<?php echo wp_nonce_url("?page=school-id-card-maker&action=delete&id={$student->id}", 'delete_student'); ?>" class="submitdelete" onclick="return confirm('Are you sure you want to delete this student?');">Delete</a> | </span>
                                 <span class="generate"><a href="?page=school-id-card-maker-generate&action=single&student_id=<?php echo esc_attr($student->id); ?>">Generate ID</a> | </span>
-                                <span class="print"><a href="#" onclick="window.print(); return false;">Print</a></span>
+                                <span class="print">
+                                    <form method="post" action="?page=school-id-card-maker-generate" style="display:inline;">
+                                        <?php wp_nonce_field('generate_cards', 'school_id_card_maker_generate_nonce'); ?>
+                                        <input type="hidden" name="student_id" value="<?php echo esc_attr($student->id); ?>">
+                                        <input type="hidden" name="orientation" value="horizontal">
+                                        <input type="hidden" name="template" value="template-1">
+                                        <input type="hidden" name="format" value="print">
+                                        <input type="hidden" name="generate_id_cards" value="1">
+                                        <button type="submit" style="background:none; border:none; padding:0; color:#0073aa; cursor:pointer; text-decoration:underline;">Print Default</button>
+                                    </form>
+                                </span>
                             </div>
                         </td>
                         <td class="admission_no column-admission_no" data-colname="Admission No"><?php echo esc_html($student->admission_no); ?></td>

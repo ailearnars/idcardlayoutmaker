@@ -94,6 +94,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_id_cards']))
                 });
             </script></body></html>';
             exit;
+        } else if ($format === 'print') {
+            // Read CSS
+            $css_path = SCHOOL_ID_CARD_MAKER_DIR . 'assets/css/id-card.css';
+            $css_content = file_exists($css_path) ? file_get_contents($css_path) : '';
+
+            // Direct browser print rendering
+            echo '<!DOCTYPE html><html><head><title>Print ID Cards</title><style>
+            body { font-family: sans-serif; background: #fff; margin: 0; padding: 20px; }
+            .page-break { page-break-after: always; clear: both; margin-bottom: 20px; }
+            @media print {
+                body { padding: 0; }
+                .no-print { display: none; }
+            }
+            ' . $css_content . '
+            </style></head><body>';
+            echo '<div class="no-print" style="margin-bottom: 20px;">
+                    <button onclick="window.print();" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Print Now</button>
+                    <button onclick="window.history.back();" style="padding: 10px 20px; font-size: 16px; cursor: pointer; margin-left: 10px;">Back</button>
+                  </div>';
+            echo $html;
+            echo '<script>window.onload = function() { window.print(); }</script>';
+            echo '</body></html>';
+            exit;
         }
     }
 }
@@ -177,13 +200,13 @@ $selected_student_id = isset($_GET['student_id']) ? intval($_GET['student_id']) 
                 <td>
                     <p><label><input type="radio" name="format" value="pdf" checked> PDF</label></p>
                     <p><label><input type="radio" name="format" value="png"> PNG (Image Archive)</label></p>
+                    <p><label><input type="radio" name="format" value="print"> Print Directly in Browser</label></p>
                 </td>
             </tr>
         </table>
 
         <div style="display: flex; gap: 10px; align-items: center;">
             <?php submit_button('Generate ID Cards', 'primary', 'generate_id_cards', false); ?>
-            <button type="button" class="button" onclick="window.print();">Print Options</button>
         </div>
     </form>
 </div>
