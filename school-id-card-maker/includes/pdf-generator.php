@@ -32,7 +32,7 @@ function school_id_card_maker_generate_pdf($html, $orientation = 'portrait', $fi
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <style>
-            body { font-family: sans-serif; margin: 0; padding: 0; }
+            body { font-family: "Helvetica", "Arial", sans-serif; margin: 0; padding: 0; }
             .page-break { page-break-after: always; }
             ' . $css_content . '
         </style>
@@ -56,6 +56,11 @@ function school_id_card_maker_generate_pdf($html, $orientation = 'portrait', $fi
     }
 
     $dompdf->render();
+
+    // Clear any output buffers before streaming to prevent corrupt PDF headers
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
 
     $dompdf->stream($filename, array("Attachment" => false)); // Attachment false opens in browser
     exit;

@@ -26,16 +26,35 @@ $args = array(
     'offset' => $offset
 );
 
+$current_school_filter = isset($_GET['school_filter']) ? intval($_GET['school_filter']) : 0;
+if ($current_school_filter > 0) {
+    $args['school_id'] = $current_school_filter;
+}
+
 $students = school_id_card_maker_get_students($args);
-$total_students = school_id_card_maker_get_students_count();
+$total_students = school_id_card_maker_get_students_count($args);
 $total_pages = ceil($total_students / $limit);
+
+$all_schools = school_id_card_maker_get_all_schools();
 ?>
 
 <div class="wrap saas-wrap">
-    <h1>
-        Student List
-        <a href="?page=school-id-card-maker-add" class="saas-btn saas-btn-primary">Add New Student</a>
-    </h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--saas-border); padding-bottom: 16px; margin-bottom: 24px;">
+        <h1 style="border: none; margin: 0; padding: 0;">Student List</h1>
+
+        <div style="display: flex; gap: 16px; align-items: center;">
+            <form method="get" action="" style="display: flex; align-items: center; gap: 8px;">
+                <input type="hidden" name="page" value="school-id-card-maker">
+                <select name="school_filter" class="saas-select" onchange="this.form.submit()" style="width: auto;">
+                    <option value="0">All Schools</option>
+                    <?php foreach ($all_schools as $s) : ?>
+                        <option value="<?php echo esc_attr($s->id); ?>" <?php selected($current_school_filter, $s->id); ?>><?php echo esc_html($s->school_name); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </form>
+            <a href="?page=school-id-card-maker-add" class="saas-btn saas-btn-primary">Add New Student</a>
+        </div>
+    </div>
 
     <div class="saas-table-container">
         <table class="saas-table">

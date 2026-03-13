@@ -208,18 +208,26 @@
     background-color: #333;
     color: #fff;
     text-align: center;
-    padding: 6px 10px;
+    padding: 4px 6px;
     box-sizing: border-box;
+    height: 35px; /* Restrict max height */
+    overflow: hidden;
 }
 
 .id-card .footer .school-address {
-    margin: 0 0 3px 0;
-    font-size: 10px;
+    margin: 0;
+    font-size: 9px;
     line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .id-card .footer .school-contact {
     margin: 0;
-    font-size: 9px;
+    font-size: 8px;
     color: #ddd;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
