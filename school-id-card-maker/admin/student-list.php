@@ -14,7 +14,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
 
     $id = intval($_GET['id']);
     school_id_card_maker_delete_student($id);
-    echo '<div class="notice notice-success is-dismissible"><p>Student deleted successfully.</p></div>';
+    echo '<div class="saas-notice saas-notice-success"><p>Student deleted successfully.</p></div>';
 }
 
 $paged = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
@@ -31,18 +31,70 @@ $total_students = school_id_card_maker_get_students_count();
 $total_pages = ceil($total_students / $limit);
 ?>
 
-<div class="wrap">
-    <h1 class="wp-heading-inline">Student List</h1>
-    <a href="?page=school-id-card-maker-add" class="page-title-action">Add New Student</a>
-    <hr class="wp-header-end">
+<div class="wrap saas-wrap">
+    <h1>
+        Student List
+        <a href="?page=school-id-card-maker-add" class="saas-btn saas-btn-primary">Add New Student</a>
+    </h1>
 
-    <div class="tablenav top">
-        <div class="tablenav-pages">
-            <span class="displaying-num"><?php echo esc_html($total_students); ?> items</span>
+    <div class="saas-table-container">
+        <table class="saas-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Admission No</th>
+                    <th>Class</th>
+                    <th>Section</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (!empty($students)) : ?>
+                    <?php foreach ($students as $student) : ?>
+                        <tr>
+                            <td><?php echo esc_html($student->id); ?></td>
+                            <td>
+                                <strong><a href="?page=school-id-card-maker-add&id=<?php echo esc_attr($student->id); ?>" style="color: inherit; text-decoration: none;"><?php echo esc_html($student->student_name); ?></a></strong>
+                            </td>
+                            <td><?php echo esc_html($student->admission_no); ?></td>
+                            <td><?php echo esc_html($student->class); ?></td>
+                            <td><?php echo esc_html($student->section); ?></td>
+                            <td>
+                                <div class="saas-actions">
+                                    <a href="?page=school-id-card-maker-add&id=<?php echo esc_attr($student->id); ?>" class="saas-action-edit">Edit</a>
+                                    <a href="<?php echo wp_nonce_url("?page=school-id-card-maker&action=delete&id={$student->id}", 'delete_student'); ?>" class="saas-action-delete" onclick="return confirm('Are you sure you want to delete this student?');">Delete</a>
+                                    <a href="?page=school-id-card-maker-generate&action=single&student_id=<?php echo esc_attr($student->id); ?>" class="saas-action-generate">Generate</a>
+                                    <form method="post" action="?page=school-id-card-maker-generate" style="display:inline; margin:0; padding:0;">
+                                        <?php wp_nonce_field('generate_cards', 'school_id_card_maker_generate_nonce'); ?>
+                                        <input type="hidden" name="student_id" value="<?php echo esc_attr($student->id); ?>">
+                                        <input type="hidden" name="orientation" value="horizontal">
+                                        <input type="hidden" name="template" value="template-1">
+                                        <input type="hidden" name="format" value="print">
+                                        <input type="hidden" name="generate_id_cards" value="1">
+                                        <button type="submit" style="background:none; border:none; padding:0; font-size: 13px; font-weight: 500; font-family: inherit; color:#6B7280; cursor:pointer;">Print</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 32px; color: var(--saas-text-muted);">No students found. Add your first student to get started.</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+
+        <?php if ($total_pages > 0) : ?>
+        <div class="saas-pagination">
+            <div class="saas-pagination-info">
+                Showing <strong><?php echo esc_html($offset + 1); ?></strong> to <strong><?php echo esc_html(min($offset + $limit, $total_students)); ?></strong> of <strong><?php echo esc_html($total_students); ?></strong> items
+            </div>
             <?php if ($total_pages > 1) : ?>
-                <span class="pagination-links">
+                <div class="saas-pagination-links">
                     <?php
-                    $page_links = paginate_links(array(
+                    echo paginate_links(array(
                         'base'      => add_query_arg('paged', '%#%'),
                         'format'    => '',
                         'prev_text' => __('&laquo;'),
@@ -50,91 +102,10 @@ $total_pages = ceil($total_students / $limit);
                         'total'     => $total_pages,
                         'current'   => $paged,
                     ));
-                    echo $page_links;
                     ?>
-                </span>
+                </div>
             <?php endif; ?>
         </div>
+        <?php endif; ?>
     </div>
-
-    <table class="wp-list-table widefat fixed striped table-view-list students">
-        <thead>
-            <tr>
-                <th scope="col" id="id" class="manage-column column-id column-primary sortable desc">
-                    <a href="#"><span>ID</span></a>
-                </th>
-                <th scope="col" id="student_name" class="manage-column column-student_name sortable desc">
-                    <a href="#"><span>Name</span></a>
-                </th>
-                <th scope="col" id="admission_no" class="manage-column column-admission_no sortable desc">
-                    <a href="#"><span>Admission No</span></a>
-                </th>
-                <th scope="col" id="class" class="manage-column column-class sortable desc">
-                    <a href="#"><span>Class</span></a>
-                </th>
-                <th scope="col" id="section" class="manage-column column-section sortable desc">
-                    <a href="#"><span>Section</span></a>
-                </th>
-            </tr>
-        </thead>
-
-        <tbody id="the-list">
-            <?php if (!empty($students)) : ?>
-                <?php foreach ($students as $student) : ?>
-                    <tr id="student-<?php echo esc_attr($student->id); ?>" class="iedit author-self level-0 type-student has-row-actions">
-                        <td class="id column-id has-row-actions column-primary" data-colname="ID">
-                            <?php echo esc_html($student->id); ?>
-                            <button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button>
-                        </td>
-                        <td class="student_name column-student_name" data-colname="Name">
-                            <strong><a class="row-title" href="?page=school-id-card-maker-add&id=<?php echo esc_attr($student->id); ?>"><?php echo esc_html($student->student_name); ?></a></strong>
-                            <div class="row-actions">
-                                <span class="edit"><a href="?page=school-id-card-maker-add&id=<?php echo esc_attr($student->id); ?>">Edit</a> | </span>
-                                <span class="delete"><a href="<?php echo wp_nonce_url("?page=school-id-card-maker&action=delete&id={$student->id}", 'delete_student'); ?>" class="submitdelete" onclick="return confirm('Are you sure you want to delete this student?');">Delete</a> | </span>
-                                <span class="generate"><a href="?page=school-id-card-maker-generate&action=single&student_id=<?php echo esc_attr($student->id); ?>">Generate ID</a> | </span>
-                                <span class="print">
-                                    <form method="post" action="?page=school-id-card-maker-generate" style="display:inline;">
-                                        <?php wp_nonce_field('generate_cards', 'school_id_card_maker_generate_nonce'); ?>
-                                        <input type="hidden" name="student_id" value="<?php echo esc_attr($student->id); ?>">
-                                        <input type="hidden" name="orientation" value="horizontal">
-                                        <input type="hidden" name="template" value="template-1">
-                                        <input type="hidden" name="format" value="print">
-                                        <input type="hidden" name="generate_id_cards" value="1">
-                                        <button type="submit" style="background:none; border:none; padding:0; color:#0073aa; cursor:pointer; text-decoration:underline;">Print Default</button>
-                                    </form>
-                                </span>
-                            </div>
-                        </td>
-                        <td class="admission_no column-admission_no" data-colname="Admission No"><?php echo esc_html($student->admission_no); ?></td>
-                        <td class="class column-class" data-colname="Class"><?php echo esc_html($student->class); ?></td>
-                        <td class="section column-section" data-colname="Section"><?php echo esc_html($student->section); ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php else : ?>
-                <tr class="no-items">
-                    <td class="colspanchange" colspan="5">No students found.</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-
-        <tfoot>
-            <tr>
-                <th scope="col" class="manage-column column-id column-primary sortable desc">
-                    <a href="#"><span>ID</span></a>
-                </th>
-                <th scope="col" class="manage-column column-student_name sortable desc">
-                    <a href="#"><span>Name</span></a>
-                </th>
-                <th scope="col" class="manage-column column-admission_no sortable desc">
-                    <a href="#"><span>Admission No</span></a>
-                </th>
-                <th scope="col" class="manage-column column-class sortable desc">
-                    <a href="#"><span>Class</span></a>
-                </th>
-                <th scope="col" class="manage-column column-section sortable desc">
-                    <a href="#"><span>Section</span></a>
-                </th>
-            </tr>
-        </tfoot>
-    </table>
 </div>

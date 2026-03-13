@@ -109,8 +109,8 @@ function school_id_card_maker_settings_page() {
 add_action('admin_enqueue_scripts', 'school_id_card_maker_admin_scripts');
 function school_id_card_maker_admin_scripts($hook) {
     if (strpos($hook, 'school-id-card-maker') !== false) {
+        wp_enqueue_style('google-fonts-inter', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap', array(), null);
         wp_enqueue_style('school-id-card-maker-css', SCHOOL_ID_CARD_MAKER_URL . 'assets/css/id-card.css');
-        // Bootstrap or Tailwind could be added here if not conflicting
-        // wp_enqueue_style('bootstrap-css', 'https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css');
+        wp_enqueue_style('school-id-card-maker-saas-css', SCHOOL_ID_CARD_MAKER_URL . 'assets/css/admin-saas.css');
     }
 }

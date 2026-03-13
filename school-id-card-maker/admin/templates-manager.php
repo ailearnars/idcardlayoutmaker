@@ -63,49 +63,52 @@ $student->school_name = get_option('school_id_card_default_school_name', 'Spring
 }
 </style>
 
-<div class="wrap">
-    <h1 class="wp-heading-inline">Template Library</h1>
-    <hr class="wp-header-end">
+<div class="wrap saas-wrap">
+    <h1>Template Library</h1>
 
-    <h2>Horizontal Templates</h2>
-    <div class="template-grid" style="display: flex; flex-wrap: wrap; gap: 20px;">
-        <?php foreach ($horizontal_templates as $template) :
-            $filename = basename($template, '.php');
-        ?>
-            <div class="template-card" style="border: 1px solid #ccc; padding: 15px; text-align: center; width: 220px; background: #fff;">
-                <div class="preview-container preview-horizontal">
-                    <div class="preview-scaler">
-                        <?php
-                        ob_start();
-                        include $template;
-                        echo ob_get_clean();
-                        ?>
+    <div style="margin-top: 32px;">
+        <h2>Horizontal Templates</h2>
+        <div class="saas-template-grid">
+            <?php foreach ($horizontal_templates as $template) :
+                $filename = basename($template, '.php');
+            ?>
+                <div class="saas-template-card">
+                    <div class="preview-container preview-horizontal">
+                        <div class="preview-scaler">
+                            <?php
+                            ob_start();
+                            include $template;
+                            echo ob_get_clean();
+                            ?>
+                        </div>
                     </div>
+                    <h3><?php echo esc_html(ucwords(str_replace('-', ' ', $filename))); ?></h3>
+                    <a href="?page=school-id-card-maker-generate&template=<?php echo urlencode($filename); ?>&orientation=horizontal" class="saas-btn saas-btn-primary" style="width: 100%;">Use Template</a>
                 </div>
-                <h3><?php echo esc_html(ucwords(str_replace('-', ' ', $filename))); ?></h3>
-                <a href="?page=school-id-card-maker-generate&template=<?php echo urlencode($filename); ?>&orientation=horizontal" class="button button-primary">Use Template</a>
-            </div>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
+        </div>
     </div>
 
-    <h2 style="margin-top: 40px;">Vertical Templates</h2>
-    <div class="template-grid" style="display: flex; flex-wrap: wrap; gap: 20px;">
-        <?php foreach ($vertical_templates as $template) :
-            $filename = basename($template, '.php');
-        ?>
-            <div class="template-card" style="border: 1px solid #ccc; padding: 15px; text-align: center; width: 140px; background: #fff;">
-                <div class="preview-container preview-vertical">
-                    <div class="preview-scaler">
-                        <?php
-                        ob_start();
-                        include $template;
-                        echo ob_get_clean();
-                        ?>
+    <div style="margin-top: 48px;">
+        <h2>Vertical Templates</h2>
+        <div class="saas-template-grid" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));">
+            <?php foreach ($vertical_templates as $template) :
+                $filename = basename($template, '.php');
+            ?>
+                <div class="saas-template-card">
+                    <div class="preview-container preview-vertical">
+                        <div class="preview-scaler">
+                            <?php
+                            ob_start();
+                            include $template;
+                            echo ob_get_clean();
+                            ?>
+                        </div>
                     </div>
+                    <h3><?php echo esc_html(ucwords(str_replace('-', ' ', $filename))); ?></h3>
+                    <a href="?page=school-id-card-maker-generate&template=<?php echo urlencode($filename); ?>&orientation=vertical" class="saas-btn saas-btn-primary" style="width: 100%;">Use Template</a>
                 </div>
-                <h3><?php echo esc_html(ucwords(str_replace('-', ' ', $filename))); ?></h3>
-                <a href="?page=school-id-card-maker-generate&template=<?php echo urlencode($filename); ?>&orientation=vertical" class="button button-primary">Use Template</a>
-            </div>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
+        </div>
     </div>
 </div>

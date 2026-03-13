@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_id_cards']))
     }
 
     if (empty($students)) {
-        echo '<div class="notice notice-error"><p>No students found for the selected criteria.</p></div>';
+        echo '<div class="saas-notice saas-notice-error"><p>No students found for the selected criteria.</p></div>';
     } else {
         $html = '';
         foreach ($students as $student) {
@@ -130,28 +130,25 @@ $selected_orientation = isset($_GET['orientation']) ? sanitize_text_field($_GET[
 $selected_student_id = isset($_GET['student_id']) ? intval($_GET['student_id']) : 0;
 ?>
 
-<div class="wrap">
-    <h1 class="wp-heading-inline">Generate ID Cards</h1>
-    <hr class="wp-header-end">
+<div class="wrap saas-wrap">
+    <h1>Generate ID Cards</h1>
 
-    <form method="post" action="">
-        <?php wp_nonce_field('generate_cards', 'school_id_card_maker_generate_nonce'); ?>
+    <div class="saas-card" style="max-width: 600px;">
+        <form method="post" action="">
+            <?php wp_nonce_field('generate_cards', 'school_id_card_maker_generate_nonce'); ?>
 
-        <table class="form-table">
-            <tr>
-                <th scope="row"><label for="orientation">Orientation</label></th>
-                <td>
-                    <select name="orientation" id="orientation">
+            <div class="saas-grid-2">
+                <div class="saas-form-group">
+                    <label for="orientation">Orientation</label>
+                    <select name="orientation" id="orientation" class="saas-select">
                         <option value="horizontal" <?php selected($selected_orientation, 'horizontal'); ?>>Horizontal</option>
                         <option value="vertical" <?php selected($selected_orientation, 'vertical'); ?>>Vertical</option>
                     </select>
-                </td>
-            </tr>
+                </div>
 
-            <tr>
-                <th scope="row"><label for="template">Template</label></th>
-                <td>
-                    <select name="template" id="template">
+                <div class="saas-form-group">
+                    <label for="template">Template</label>
+                    <select name="template" id="template" class="saas-select">
                         <optgroup label="Horizontal">
                             <?php foreach ($horizontal_templates as $template) :
                                 $filename = basename($template, '.php');
@@ -167,46 +164,56 @@ $selected_student_id = isset($_GET['student_id']) ? intval($_GET['student_id']) 
                             <?php endforeach; ?>
                         </optgroup>
                     </select>
-                </td>
-            </tr>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid var(--saas-border); margin: 20px 0;"></div>
 
             <?php if ($selected_student_id > 0) : ?>
-                <tr>
-                    <th scope="row"><label>Student ID</label></th>
-                    <td>
-                        <input type="number" name="student_id" value="<?php echo esc_attr($selected_student_id); ?>" readonly>
-                        <p class="description">Generating for single student.</p>
-                    </td>
-                </tr>
+                <div class="saas-form-group">
+                    <label>Student ID (Single Generate)</label>
+                    <input type="number" name="student_id" value="<?php echo esc_attr($selected_student_id); ?>" readonly class="saas-input" style="background: #f9fafb; cursor: not-allowed;">
+                    <p class="description" style="margin-top: 4px; font-size: 12px; color: var(--saas-text-muted);">Generating for single student.</p>
+                </div>
             <?php else : ?>
-                <tr>
-                    <th scope="row"><label for="class">Class (Bulk Generate)</label></th>
-                    <td>
-                        <input type="text" name="class" id="class" class="regular-text">
-                        <p class="description">Leave empty to generate for all classes.</p>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row"><label for="section">Section (Bulk Generate)</label></th>
-                    <td>
-                        <input type="text" name="section" id="section" class="regular-text">
-                        <p class="description">Leave empty to generate for all sections.</p>
-                    </td>
-                </tr>
+                <h2>Bulk Generate Filters</h2>
+                <div class="saas-grid-2">
+                    <div class="saas-form-group">
+                        <label for="class">Class</label>
+                        <input type="text" name="class" id="class" class="saas-input" placeholder="e.g. 10">
+                        <p class="description" style="margin-top: 4px; font-size: 12px; color: var(--saas-text-muted);">Leave empty for all classes.</p>
+                    </div>
+                    <div class="saas-form-group">
+                        <label for="section">Section</label>
+                        <input type="text" name="section" id="section" class="saas-input" placeholder="e.g. A">
+                        <p class="description" style="margin-top: 4px; font-size: 12px; color: var(--saas-text-muted);">Leave empty for all sections.</p>
+                    </div>
+                </div>
             <?php endif; ?>
 
-            <tr>
-                <th scope="row"><label>Export Format</label></th>
-                <td>
-                    <p><label><input type="radio" name="format" value="pdf" checked> PDF</label></p>
-                    <p><label><input type="radio" name="format" value="png"> PNG (Image Archive)</label></p>
-                    <p><label><input type="radio" name="format" value="print"> Print Directly in Browser</label></p>
-                </td>
-            </tr>
-        </table>
+            <div style="border-top: 1px solid var(--saas-border); margin: 20px 0;"></div>
 
-        <div style="display: flex; gap: 10px; align-items: center;">
-            <?php submit_button('Generate ID Cards', 'primary', 'generate_id_cards', false); ?>
-        </div>
-    </form>
+            <div class="saas-form-group">
+                <label>Export Format</label>
+                <div class="saas-radio-group">
+                    <label class="saas-radio-label">
+                        <input type="radio" name="format" value="pdf" checked>
+                        <span><strong>PDF Output</strong> - Generates a multi-page PDF document.</span>
+                    </label>
+                    <label class="saas-radio-label">
+                        <input type="radio" name="format" value="png">
+                        <span><strong>PNG Output</strong> - Downloads a ZIP archive of individual images.</span>
+                    </label>
+                    <label class="saas-radio-label">
+                        <input type="radio" name="format" value="print">
+                        <span><strong>Print in Browser</strong> - Opens native print dialog immediately.</span>
+                    </label>
+                </div>
+            </div>
+
+            <div style="margin-top: 32px;">
+                <button type="submit" name="generate_id_cards" class="saas-btn saas-btn-primary" style="padding: 12px 24px; font-size: 15px; width: 100%;">Generate ID Cards</button>
+            </div>
+        </form>
+    </div>
 </div>
