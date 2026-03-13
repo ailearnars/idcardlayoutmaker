@@ -1,9 +1,9 @@
 <div class="id-card vertical template-51" style="background-color: #ffffff;">
     <div class="header" style="border-bottom: 3px solid #D90429; background: #fff;">
-                <?php if (!empty($student->school_logo)): ?><img src="<?php echo esc_url($student->school_logo); ?>" class="logo" alt="Logo"><?php endif; ?>
+                <?php $logo_url = !empty($student->school_logo) ? $student->school_logo : get_option("school_id_card_default_school_logo", ""); if(!empty($logo_url)): ?><img src="<?php echo esc_url($logo_url); ?>" class="logo" alt="Logo"><?php endif; ?>
                 <h2 class="school-name" style="color: #D90429"><?php echo esc_html(!empty($student->school_name) ? $student->school_name : get_option("school_id_card_default_school_name", "Default School")); ?></h2>
             </div>
-    <div class="body">
+    <div class="body" style="background-color: #ffffff;">
         <div class="photo-container" style="border-radius: 0; border: 2px solid #D90429; box-shadow: none;">
             <?php if (!empty($student->student_photo)): ?>
                 <img src="<?php echo esc_url($student->student_photo); ?>" class="photo" alt="Photo" style="object-fit: cover;">

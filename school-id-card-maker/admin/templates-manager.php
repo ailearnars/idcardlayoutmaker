@@ -6,6 +6,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 $horizontal_templates = glob( SCHOOL_ID_CARD_MAKER_DIR . 'templates/horizontal/*.php' );
 $vertical_templates = glob( SCHOOL_ID_CARD_MAKER_DIR . 'templates/vertical/*.php' );
 
+$custom_templates_option = get_option('school_id_card_custom_templates', array());
+$custom_horizontal = array();
+$custom_vertical = array();
+
+if (is_array($custom_templates_option)) {
+    foreach ($custom_templates_option as $id => $tpl) {
+        if ($tpl['orientation'] === 'horizontal') {
+            $custom_horizontal[] = $tpl;
+        } else {
+            $custom_vertical[] = $tpl;
+        }
+    }
+}
+
 // Create a dummy student for live previews
 $student = new stdClass();
 $student->student_name = "John Doe";
@@ -66,8 +80,65 @@ $student->school_name = get_option('school_id_card_default_school_name', 'Spring
 <div class="wrap saas-wrap">
     <h1>Template Library</h1>
 
-    <div style="margin-top: 32px;">
-        <h2>Horizontal Templates</h2>
+    <?php if (!empty($custom_horizontal) || !empty($custom_vertical)): ?>
+    <div style="margin-top: 32px; background: #e0e7ff; padding: 20px; border-radius: 8px; border: 1px solid #c7d2fe;">
+        <h2>My Custom Templates</h2>
+        <div class="saas-template-grid">
+            <?php foreach ($custom_horizontal as $tpl) : ?>
+                <div class="saas-template-card">
+                    <div class="preview-container preview-horizontal">
+                        <div class="preview-scaler">
+                            <?php
+                            $card_html = wp_unslash($tpl['html']);
+                            $card_html = str_replace('{{STUDENT_NAME}}', 'John Doe', $card_html);
+                            $card_html = str_replace('{{CLASS_INFO}}', '10 A', $card_html);
+                            $card_html = str_replace('{{ROLL_NO}}', '1234', $card_html);
+                            $card_html = str_replace('{{DOB}}', '2005-08-15', $card_html);
+                            $card_html = str_replace('{{STUDENT_PHOTO}}', '<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:10px; color:#999; background:#eee; border:1px solid #ccc;">Photo</div>', $card_html);
+
+                            $allowed_html = wp_kses_allowed_html('post');
+                            $allowed_html['div']['style'] = true;
+                            $allowed_html['span']['style'] = true;
+                            $allowed_html['p']['style'] = true;
+                            $allowed_html['h1']['style'] = true;
+                            $allowed_html['h2']['style'] = true;
+                            $allowed_html['h3']['style'] = true;
+                            $allowed_html['img']['style'] = true;
+
+                            echo wp_kses($card_html, $allowed_html);
+                            ?>
+                        </div>
+                    </div>
+                    <h3><?php echo esc_html($tpl['id']); ?> (Horizontal)</h3>
+                    <a href="?page=school-id-card-maker-generate&template=<?php echo esc_attr($tpl['id']); ?>&orientation=horizontal" class="saas-btn saas-btn-primary" style="width: 100%;">Use Template</a>
+                </div>
+            <?php endforeach; ?>
+            <?php foreach ($custom_vertical as $tpl) : ?>
+                <div class="saas-template-card">
+                    <div class="preview-container preview-vertical">
+                        <div class="preview-scaler">
+                            <?php
+                            $card_html = wp_unslash($tpl['html']);
+                            $card_html = str_replace('{{STUDENT_NAME}}', 'John Doe', $card_html);
+                            $card_html = str_replace('{{CLASS_INFO}}', '10 A', $card_html);
+                            $card_html = str_replace('{{ROLL_NO}}', '1234', $card_html);
+                            $card_html = str_replace('{{DOB}}', '2005-08-15', $card_html);
+                            $card_html = str_replace('{{STUDENT_PHOTO}}', '<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:10px; color:#999; background:#eee; border:1px solid #ccc;">Photo</div>', $card_html);
+
+                            echo wp_kses($card_html, $allowed_html);
+                            ?>
+                        </div>
+                    </div>
+                    <h3><?php echo esc_html($tpl['id']); ?> (Vertical)</h3>
+                    <a href="?page=school-id-card-maker-generate&template=<?php echo esc_attr($tpl['id']); ?>&orientation=vertical" class="saas-btn saas-btn-primary" style="width: 100%;">Use Template</a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <div style="margin-top: 48px;">
+        <h2>Default Horizontal Templates</h2>
         <div class="saas-template-grid">
             <?php foreach ($horizontal_templates as $template) :
                 $filename = basename($template, '.php');
@@ -90,7 +161,7 @@ $student->school_name = get_option('school_id_card_default_school_name', 'Spring
     </div>
 
     <div style="margin-top: 48px;">
-        <h2>Vertical Templates</h2>
+        <h2>Default Vertical Templates</h2>
         <div class="saas-template-grid" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));">
             <?php foreach ($vertical_templates as $template) :
                 $filename = basename($template, '.php');

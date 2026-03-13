@@ -1,8 +1,8 @@
-<div class="id-card vertical template-40" style="background-color: #fafafa;">
+<div class="id-card vertical template-40" style="background-color: #ffffff;">
     <div class="header" style="background: #222222; color: #ffffff; border-bottom: 5px solid #4A4A4A; padding-top: 20px;">
                 <h2 class="school-name" style="color: #ffffff; font-size: 15px;"><?php echo esc_html(!empty($student->school_name) ? $student->school_name : get_option("school_id_card_default_school_name", "Default School")); ?></h2>
             </div>
-    <div class="body">
+    <div class="body" style="background-color: #ffffff;">
         <div class="photo-container" style="border: 4px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.2); margin-top: -15px; z-index: 10; position: relative;">
             <?php if (!empty($student->student_photo)): ?>
                 <img src="<?php echo esc_url($student->student_photo); ?>" class="photo" alt="Photo" style="object-fit: cover;">

@@ -2,8 +2,8 @@
 /**
  * Plugin Name: School ID Card Maker
  * Description: Create and generate school student ID cards automatically.
- * Version: 1.0.0
- * Author: Your Name
+ * Version: 2.0.0
+ * Author: Neel Govind
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -76,6 +76,15 @@ function school_id_card_maker_admin_menu() {
 
     add_submenu_page(
         'school-id-card-maker',
+        'ID Card Builder',
+        'ID Card Builder',
+        'manage_options',
+        'school-id-card-maker-builder',
+        'school_id_card_maker_builder_page'
+    );
+
+    add_submenu_page(
+        'school-id-card-maker',
         'Settings',
         'Settings',
         'manage_options',
@@ -99,6 +108,10 @@ function school_id_card_maker_templates_page() {
 
 function school_id_card_maker_generate_page() {
     require_once SCHOOL_ID_CARD_MAKER_DIR . 'admin/generate-card.php';
+}
+
+function school_id_card_maker_builder_page() {
+    require_once SCHOOL_ID_CARD_MAKER_DIR . 'admin/id-card-builder.php';
 }
 
 function school_id_card_maker_settings_page() {

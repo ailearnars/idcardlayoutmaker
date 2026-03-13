@@ -2,7 +2,7 @@
     <div class="header" style="background: #06D6A0; color: #000000; border-bottom: 5px solid #118AB2; padding-top: 20px;">
                 <h2 class="school-name" style="color: #000000; font-size: 15px;"><?php echo esc_html(!empty($student->school_name) ? $student->school_name : get_option("school_id_card_default_school_name", "Default School")); ?></h2>
             </div>
-    <div class="body">
+    <div class="body" style="background-color: #ffffff;">
         <div class="photo-container" style="border: 4px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.2); margin-top: -15px; z-index: 10; position: relative;">
             <?php if (!empty($student->student_photo)): ?>
                 <img src="<?php echo esc_url($student->student_photo); ?>" class="photo" alt="Photo" style="object-fit: cover;">

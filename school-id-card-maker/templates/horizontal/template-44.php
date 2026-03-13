@@ -1,11 +1,11 @@
 <div class="id-card horizontal template-44" style="background-color: #ffffff;">
-    <div class="header" style="border: none; text-align: left; padding-left: 20px;">
+    <div class="header" style="border: none; text-align: left; padding-left: 20px; background: #fff;">
                 <h2 class="school-name" style="color: #9B2226; font-weight: normal;"><?php echo esc_html(!empty($student->school_name) ? $student->school_name : get_option("school_id_card_default_school_name", "Default School")); ?></h2>
             </div>
-    <div class="body">
+    <div class="body" style="background-color: #ffffff;">
         <div class="photo-container" style="top: 15px; left: 20px; border: none; box-shadow: none;">
             <?php if (!empty($student->student_photo)): ?>
-                <img src="<?php echo esc_url($student->student_photo); ?>" class="photo" alt="Photo">
+                <img src="<?php echo esc_url($student->student_photo); ?>" class="photo" alt="Photo" style="object-fit: cover;">
             <?php else: ?>
                 <div class="photo-placeholder" style="line-height: 105px;">Photo</div>
             <?php endif; ?>
