@@ -47,4 +47,10 @@ function school_id_card_maker_create_table() {
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     dbDelta( $sql_schools );
     dbDelta( $sql );
+
+    // Explicit alter table to ensure school_website exists due to dbDelta caching issues sometimes
+    $row = $wpdb->get_results( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$schools_table' AND column_name = 'school_website'" );
+    if (empty($row)) {
+        $wpdb->query("ALTER TABLE $schools_table ADD school_website varchar(255) DEFAULT NULL");
+    }
 }

@@ -24,6 +24,12 @@
     padding: 24px;
     border-radius: var(--saas-radius);
     min-height: calc(100vh - 80px);
+    animation: saas-fade-in 0.3s ease-out;
+}
+
+@keyframes saas-fade-in {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .saas-wrap h1 {
@@ -64,9 +70,13 @@
     border-radius: var(--saas-radius);
     border: none;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
     line-height: 1.5;
+}
+
+.saas-btn:active {
+    transform: scale(0.97);
 }
 
 .saas-btn-primary {
@@ -114,6 +124,11 @@
     padding: 24px;
     box-shadow: var(--saas-shadow);
     margin-bottom: 24px;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.saas-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .saas-grid-2 {
@@ -222,6 +237,10 @@
     color: var(--saas-text-main);
     border-bottom: 1px solid var(--saas-border);
     vertical-align: middle;
+}
+
+.saas-table tbody tr {
+    transition: background-color 0.2s ease;
 }
 
 .saas-table tbody tr:hover {

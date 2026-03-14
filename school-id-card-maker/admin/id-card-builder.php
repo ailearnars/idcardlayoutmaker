@@ -171,15 +171,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_custom_template'
                 </div>
             </div>
 
-            <div class="builder-tool-group">
+            <div class="builder-tool-group" style="max-height: 250px; overflow-y: auto; padding-right: 5px;">
                 <h3>Add Elements</h3>
-                <button class="tool-btn" onclick="addTextElement('School Name', '<?php echo esc_html(get_option('school_id_card_default_school_name', 'Default School')); ?>', 16, 'bold', '#000000')">+ School Name Header</button>
-                <button class="tool-btn" onclick="addTextElement('Student Name', '{{STUDENT_NAME}}', 18, 'bold', '#4F46E5')">+ Dynamic Student Name</button>
-                <button class="tool-btn" onclick="addTextElement('Class Info', 'Class: {{CLASS_INFO}}', 12, 'normal', '#333333')">+ Dynamic Class</button>
-                <button class="tool-btn" onclick="addTextElement('Roll No Info', 'Roll No: {{ROLL_NO}}', 12, 'normal', '#333333')">+ Dynamic Roll No</button>
-                <button class="tool-btn" onclick="addTextElement('DOB Info', 'DOB: {{DOB}}', 12, 'normal', '#333333')">+ Dynamic DOB</button>
-                <button class="tool-btn" onclick="addPhotoElement()">+ Dynamic Student Photo</button>
-                <button class="tool-btn" onclick="addTextElement('Custom Text', 'Custom Text Here', 12, 'normal', '#000000')">+ Static Text</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('School Name', '{{SCHOOL_NAME}}', 16, 'bold', '#000000')">+ School Name Header</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('School Address', '{{SCHOOL_ADDRESS}}', 10, 'normal', '#333333')">+ School Address</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('School Contact', '{{SCHOOL_CONTACT}} | {{SCHOOL_EMAIL}}', 10, 'normal', '#333333')">+ School Contact</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Student Name', '{{STUDENT_NAME}}', 18, 'bold', '#4F46E5')">+ Dynamic Student Name</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Class Info', 'Class: {{CLASS_INFO}}', 12, 'normal', '#333333')">+ Dynamic Class</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Roll No Info', 'Roll No: {{ROLL_NO}}', 12, 'normal', '#333333')">+ Dynamic Roll No</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('DOB Info', 'DOB: {{DOB}}', 12, 'normal', '#333333')">+ Dynamic DOB</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Blood Group', 'Blood Group: {{BLOOD_GROUP}}', 12, 'normal', '#333333')">+ Dynamic Blood Group</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Admission No', 'Admission No: {{ADMISSION_NO}}', 12, 'normal', '#333333')">+ Dynamic Admission No</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Father Name', 'Father: {{FATHER_NAME}}', 12, 'normal', '#333333')">+ Dynamic Father Name</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Mother Name', 'Mother: {{MOTHER_NAME}}', 12, 'normal', '#333333')">+ Dynamic Mother Name</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Phone Number', 'Phone: {{PHONE}}', 12, 'normal', '#333333')">+ Dynamic Phone</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Student Address', '{{ADDRESS}}', 12, 'normal', '#333333')">+ Dynamic Student Address</button>
+                <button type="button" class="tool-btn" onclick="addPhotoElement()">+ Dynamic Student Photo</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Custom Text', 'Custom Text Here', 12, 'normal', '#000000')">+ Static Text</button>
             </div>
 
             <div class="properties-panel" id="properties-panel">
