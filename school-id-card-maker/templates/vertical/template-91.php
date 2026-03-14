@@ -12,12 +12,14 @@
             <?php endif; ?>
         </div>
         <div class="details">
-            <h3 class="name" style="color: #fb8500; font-size: 15px; margin-bottom: 6px;"><?php echo esc_html($student->student_name); ?></h3>
-            <table style="width: 85%;">
-                <tr><td>Class:</td><td><?php echo esc_html($student->class . ' ' . $student->section); ?></td></tr>
-                <tr><td>Roll No:</td><td><?php echo esc_html($student->roll_no); ?></td></tr>
-                <tr><td>DOB:</td><td><?php echo esc_html($student->dob); ?></td></tr>
-                <tr><td>Blood:</td><td><?php echo esc_html($student->blood_group); ?></td></tr>
+            <h3 class="name" style="color: #fb8500; font-size: 15px; margin-bottom: 4px;"><?php echo esc_html($student->student_name); ?></h3>
+            <table style="width: 90%;">
+                <?php if(!empty($student->class)): ?><tr><td>Class:</td><td><?php echo esc_html($student->class . ' ' . $student->section); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->roll_no)): ?><tr><td>Roll No:</td><td><?php echo esc_html($student->roll_no); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->dob)): ?><tr><td>DOB:</td><td><?php echo esc_html($student->dob); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->blood_group)): ?><tr><td>Blood:</td><td><?php echo esc_html($student->blood_group); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->father_name)): ?><tr><td>Father:</td><td><?php echo esc_html($student->father_name); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->mother_name)): ?><tr><td>Mother:</td><td><?php echo esc_html($student->mother_name); ?></td></tr><?php endif; ?>
                 <?php if(!empty($student->phone)): ?><tr><td>Phone:</td><td><?php echo esc_html($student->phone); ?></td></tr><?php endif; ?>
             </table>
         </div>

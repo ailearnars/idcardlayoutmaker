@@ -11,13 +11,15 @@
                 <div class="photo-placeholder" style="line-height: 105px;">Photo</div>
             <?php endif; ?>
         </div>
-        <div class="details" style="top: 15px; left: 15px; right: 115px;">
-            <h3 class="name" style="color: #C8102E; border-color: #C8102E;"><?php echo esc_html($student->student_name); ?></h3>
+        <div class="details" style="top: 10px; left: 15px; right: 115px;">
+            <h3 class="name" style="color: #C8102E; border-color: #C8102E; margin-bottom: 4px;"><?php echo esc_html($student->student_name); ?></h3>
             <table>
-                <tr><td>Class:</td><td><?php echo esc_html($student->class . ' ' . $student->section); ?></td></tr>
-                <tr><td>Roll No:</td><td><?php echo esc_html($student->roll_no); ?></td></tr>
-                <tr><td>DOB:</td><td><?php echo esc_html($student->dob); ?></td></tr>
-                <tr><td>Blood Group:</td><td><?php echo esc_html($student->blood_group); ?></td></tr>
+                <?php if(!empty($student->class)): ?><tr><td>Class:</td><td><?php echo esc_html($student->class . ' ' . $student->section); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->roll_no)): ?><tr><td>Roll No:</td><td><?php echo esc_html($student->roll_no); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->dob)): ?><tr><td>DOB:</td><td><?php echo esc_html($student->dob); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->blood_group)): ?><tr><td>Blood Grp:</td><td><?php echo esc_html($student->blood_group); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->father_name)): ?><tr><td>Father:</td><td><?php echo esc_html($student->father_name); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->mother_name)): ?><tr><td>Mother:</td><td><?php echo esc_html($student->mother_name); ?></td></tr><?php endif; ?>
                 <?php if(!empty($student->phone)): ?><tr><td>Phone:</td><td><?php echo esc_html($student->phone); ?></td></tr><?php endif; ?>
             </table>
         </div>
