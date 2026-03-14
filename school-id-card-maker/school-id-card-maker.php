@@ -2,7 +2,7 @@
 /**
  * Plugin Name: School ID Card Maker
  * Description: Create and generate school student ID cards automatically.
- * Version: 3.0.0
+ * Version: 3.1.0
  * Author: Neel Govind
  */
 
