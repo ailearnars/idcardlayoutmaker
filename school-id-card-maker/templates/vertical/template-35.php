@@ -3,7 +3,7 @@
                 <h2 class="school-name" style="color: #000000; font-size: 15px;"><?php echo esc_html(!empty($student->school_name) ? $student->school_name : get_option("school_id_card_default_school_name", "Default School")); ?></h2>
             </div>
     <div class="body" style="background-color: #ffffff;">
-        <div class="photo-container" style="border: 4px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.2); margin-top: -15px; z-index: 10; position: relative;">
+        <div class="photo-container" style="border: 4px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.2); margin-top: -15px; z-index: 10; position: relative; margin-bottom: 5px;">
             <?php if (!empty($student->student_photo)): ?>
                 <img src="<?php echo esc_url($student->student_photo); ?>" class="photo" alt="Photo" style="object-fit: cover;">
             <?php else: ?>
@@ -11,14 +11,17 @@
             <?php endif; ?>
         </div>
         <div class="details">
-            <h3 class="name" style="color: #118AB2; font-size: 15px; margin-bottom: 6px;"><?php echo esc_html($student->student_name); ?></h3>
-            <table style="width: 85%;">
-                <tr><td>Class:</td><td><?php echo esc_html($student->class . ' ' . $student->section); ?></td></tr>
-                <tr><td>Roll No:</td><td><?php echo esc_html($student->roll_no); ?></td></tr>
-                <tr><td>DOB:</td><td><?php echo esc_html($student->dob); ?></td></tr>
-                <tr><td>Blood:</td><td><?php echo esc_html($student->blood_group); ?></td></tr>
+            <h3 class="name" style="color: #118AB2; font-size: 15px; margin-bottom: 4px;"><?php echo esc_html($student->student_name); ?></h3>
+            <table style="width: 90%;">
+                <?php if(!empty($student->class)): ?><tr><td>Class:</td><td><?php echo esc_html($student->class . ' ' . $student->section); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->roll_no)): ?><tr><td>Roll No:</td><td><?php echo esc_html($student->roll_no); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->dob)): ?><tr><td>DOB:</td><td><?php echo esc_html($student->dob); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->blood_group)): ?><tr><td>Blood:</td><td><?php echo esc_html($student->blood_group); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->father_name)): ?><tr><td>Father:</td><td><?php echo esc_html($student->father_name); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->mother_name)): ?><tr><td>Mother:</td><td><?php echo esc_html($student->mother_name); ?></td></tr><?php endif; ?>
                 <?php if(!empty($student->phone)): ?><tr><td>Phone:</td><td><?php echo esc_html($student->phone); ?></td></tr><?php endif; ?>
             </table>
+            <?php if(!empty($student->address)): ?><p style="font-size: 9px; line-height: 1.1; color: #333; margin: 3px auto 0 auto; text-align: left; width: 90%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;"><strong>Address:</strong> <?php echo esc_html($student->address); ?></p><?php endif; ?>
         </div>
     </div>
     <div class="footer" style="background-color: #06D6A0; color: #000000;">

@@ -84,14 +84,16 @@ $selected_student_id = isset($_GET['student_id']) ? intval($_GET['student_id']) 
                     <div class="saas-form-group">
                         <label for="school_id">Filter by School</label>
                         <select name="school_id" id="school_id" class="saas-select">
-                            <option value="">All Schools</option>
+                            <option value="0">All Schools</option>
                             <?php
                             $schools = school_id_card_maker_get_all_schools();
+                            $active_school_id = get_user_meta(get_current_user_id(), 'school_id_card_active_school', true);
                             foreach ($schools as $s) {
-                                echo '<option value="' . esc_attr($s->id) . '">' . esc_html($s->school_name) . '</option>';
+                                echo '<option value="' . esc_attr($s->id) . '" ' . selected($active_school_id, $s->id, false) . '>' . esc_html($s->school_name) . '</option>';
                             }
                             ?>
                         </select>
+                        <p class="description" style="margin-top: 4px; font-size: 12px; color: var(--saas-text-muted);">Defaults to active workspace school.</p>
                     </div>
                 </div>
                 <div class="saas-grid-2">

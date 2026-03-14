@@ -59,164 +59,252 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_custom_template'
 ?>
 
 <style>
-    .builder-container {
-        display: flex;
-        gap: 24px;
-        margin-top: 24px;
-    }
-    .builder-sidebar {
-        width: 300px;
-        background: #fff;
-        padding: 20px;
-        border-radius: 8px;
+    /* Canva-like Editor Layout */
+    .builder-layout {
+        display: grid;
+        grid-template-columns: 280px 1fr 300px;
+        gap: 0;
+        height: calc(100vh - 150px);
+        min-height: 600px;
+        background: var(--saas-bg);
         border: 1px solid var(--saas-border);
+        border-radius: var(--saas-radius);
+        overflow: hidden;
+        margin-top: 20px;
         box-shadow: var(--saas-shadow);
     }
-    .builder-canvas-wrapper {
+
+    /* Left Sidebar: Tools & Elements */
+    .builder-sidebar-left {
+        background: #ffffff;
+        border-right: 1px solid var(--saas-border);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sidebar-header {
+        padding: 16px;
+        border-bottom: 1px solid var(--saas-border);
+        background: #f9fafb;
+    }
+
+    .sidebar-header h3 { margin: 0; font-size: 14px; font-weight: 600; color: #111827; }
+
+    .elements-list {
         flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .tool-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        text-align: left;
+        background: #fff;
+        border: 1px solid var(--saas-border);
+        padding: 10px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        font-family: inherit;
+        font-size: 13px;
+        color: #374151;
+    }
+
+    .tool-btn:hover {
+        background: #f3f4f6;
+        border-color: #d1d5db;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .tool-btn .dashicons {
+        color: var(--saas-primary);
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+    }
+
+    /* Center: Canvas Area */
+    .builder-workspace {
         background: #e5e7eb;
-        padding: 40px;
         display: flex;
         justify-content: center;
-        align-items: flex-start;
-        border-radius: 8px;
-        border: 1px solid var(--saas-border);
+        align-items: center;
+        position: relative;
         overflow: auto;
+        background-image: linear-gradient(45deg, #d1d5db 25%, transparent 25%), linear-gradient(-45deg, #d1d5db 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #d1d5db 75%), linear-gradient(-45deg, transparent 75%, #d1d5db 75%);
+        background-size: 20px 20px;
+        background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
     }
+
     .builder-canvas {
         background: #fff;
         position: relative;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
         overflow: hidden;
+        transition: width 0.3s ease, height 0.3s ease;
     }
-    .builder-canvas.horizontal {
-        width: 350px;
-        height: 220px;
-    }
-    .builder-canvas.vertical {
-        width: 220px;
-        height: 350px;
-    }
+
+    .builder-canvas.horizontal { width: 350px; height: 220px; }
+    .builder-canvas.vertical { width: 220px; height: 350px; }
+
     .draggable-element {
         position: absolute;
         cursor: grab;
         padding: 5px;
-        border: 1px dashed transparent;
+        border: 2px solid transparent;
         user-select: none;
+        line-height: 1.2;
     }
-    .draggable-element:hover {
-        border-color: #4F46E5;
-    }
+
+    .draggable-element:active { cursor: grabbing; }
+    .draggable-element:hover { border-color: rgba(79, 70, 229, 0.4); }
+
     .draggable-element.selected {
-        border-color: #4F46E5;
+        border-color: var(--saas-primary);
         background: rgba(79, 70, 229, 0.05);
     }
-    .builder-tool-group {
-        margin-bottom: 20px;
+
+    /* Right Sidebar: Properties & Settings */
+    .builder-sidebar-right {
+        background: #ffffff;
+        border-left: 1px solid var(--saas-border);
+        display: flex;
+        flex-direction: column;
     }
-    .builder-tool-group h3 {
+
+    .properties-panel {
+        padding: 20px;
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    .properties-panel h3 {
         margin-top: 0;
         font-size: 14px;
         border-bottom: 1px solid var(--saas-border);
-        padding-bottom: 8px;
-        margin-bottom: 12px;
+        padding-bottom: 12px;
+        margin-bottom: 20px;
+        color: #111827;
     }
-    .tool-btn {
-        display: block;
-        width: 100%;
-        margin-bottom: 8px;
-        text-align: left;
+
+    .no-selection {
+        color: #6B7280;
+        text-align: center;
+        padding: 40px 20px;
+        font-size: 13px;
         background: #f9fafb;
-        border: 1px solid var(--saas-border);
-        padding: 8px 12px;
-        border-radius: 4px;
-        cursor: pointer;
+        border-radius: 8px;
+        border: 1px dashed #d1d5db;
+        margin-bottom: 20px;
     }
-    .tool-btn:hover {
-        background: #f3f4f6;
-        border-color: #d1d5db;
-    }
-    .properties-panel {
-        display: none;
+
+    .element-settings { display: none; }
+    .element-settings.active { display: block; }
+
+    .save-panel {
+        padding: 20px;
         background: #f9fafb;
-        padding: 12px;
-        border-radius: 4px;
-        border: 1px solid var(--saas-border);
-        margin-top: 20px;
-    }
-    .properties-panel.active {
-        display: block;
+        border-top: 1px solid var(--saas-border);
     }
 </style>
 
 <div class="wrap saas-wrap">
-    <h1>ID Card Builder <span style="font-size:12px; font-weight:normal; background:#4F46E5; color:#fff; padding:2px 8px; border-radius:12px;">Beta</span></h1>
-    <p>Design your own custom template using drag and drop. Once saved, it will be available in the template library.</p>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h1 style="border: none; margin: 0; padding: 0;">
+            ID Card Designer
+            <span style="font-size:11px; vertical-align: middle; font-weight:600; background:var(--saas-primary); color:#fff; padding:3px 8px; border-radius:12px; margin-left: 8px;">Pro Builder</span>
+        </h1>
+        <a href="?page=school-id-card-maker-templates" class="saas-btn saas-btn-secondary">Library</a>
+    </div>
 
-    <div class="builder-container">
-        <!-- Sidebar -->
-        <div class="builder-sidebar">
-            <div class="builder-tool-group">
-                <h3>Card Setup</h3>
+    <div class="builder-layout">
+        <!-- Left Sidebar: Elements -->
+        <div class="builder-sidebar-left">
+            <div class="sidebar-header">
+                <h3>Drag & Drop Elements</h3>
+            </div>
+            <div class="elements-list">
+                <button type="button" class="tool-btn" onclick="addTextElement('School Name', '{{SCHOOL_NAME}}', 16, 'bold', '#000000')"><span class="dashicons dashicons-building"></span> School Header</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('School Address', '{{SCHOOL_ADDRESS}}', 10, 'normal', '#333333')"><span class="dashicons dashicons-location"></span> School Address</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('School Contact', '{{SCHOOL_CONTACT}} | {{SCHOOL_EMAIL}}', 10, 'normal', '#333333')"><span class="dashicons dashicons-phone"></span> School Contact</button>
+                <button type="button" class="tool-btn" onclick="addPhotoElement()"><span class="dashicons dashicons-format-image"></span> Student Photo</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Student Name', '{{STUDENT_NAME}}', 18, 'bold', '#4F46E5')"><span class="dashicons dashicons-admin-users"></span> Student Name</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Class Info', 'Class: {{CLASS_INFO}}', 12, 'normal', '#333333')"><span class="dashicons dashicons-welcome-learn-more"></span> Class</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Roll No Info', 'Roll No: {{ROLL_NO}}', 12, 'normal', '#333333')"><span class="dashicons dashicons-editor-ol"></span> Roll No</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('DOB Info', 'DOB: {{DOB}}', 12, 'normal', '#333333')"><span class="dashicons dashicons-calendar-alt"></span> Date of Birth</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Blood Group', 'Blood Group: {{BLOOD_GROUP}}', 12, 'normal', '#333333')"><span class="dashicons dashicons-heart"></span> Blood Group</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Admission No', 'Admission No: {{ADMISSION_NO}}', 12, 'normal', '#333333')"><span class="dashicons dashicons-id"></span> Admission No</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Father Name', 'Father: {{FATHER_NAME}}', 12, 'normal', '#333333')"><span class="dashicons dashicons-groups"></span> Father Name</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Mother Name', 'Mother: {{MOTHER_NAME}}', 12, 'normal', '#333333')"><span class="dashicons dashicons-groups"></span> Mother Name</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Phone Number', 'Phone: {{PHONE}}', 12, 'normal', '#333333')"><span class="dashicons dashicons-smartphone"></span> Phone</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Student Address', '{{ADDRESS}}', 10, 'normal', '#333333')"><span class="dashicons dashicons-location-alt"></span> Home Address</button>
+                <button type="button" class="tool-btn" onclick="addTextElement('Custom Text', 'Custom Text Here', 12, 'normal', '#000000')"><span class="dashicons dashicons-editor-textcolor"></span> Static Text</button>
+            </div>
+        </div>
+
+        <!-- Center: Workspace -->
+        <div class="builder-workspace" id="workspace">
+            <div id="canvas" class="builder-canvas horizontal" style="background-color: #ffffff;">
+                <!-- Droppable elements -->
+            </div>
+        </div>
+
+        <!-- Right Sidebar: Properties -->
+        <div class="builder-sidebar-right">
+            <div class="properties-panel">
+                <h3>Global Layout</h3>
                 <div class="saas-form-group">
                     <label>Orientation</label>
                     <select id="canvas-orientation" class="saas-select" onchange="changeOrientation()">
-                        <option value="horizontal">Horizontal (350x220)</option>
-                        <option value="vertical">Vertical (220x350)</option>
+                        <option value="horizontal">Horizontal Card</option>
+                        <option value="vertical">Vertical Card</option>
                     </select>
                 </div>
                 <div class="saas-form-group">
-                    <label>Background Color</label>
-                    <input type="color" id="canvas-bg" value="#ffffff" onchange="changeCanvasBg()">
+                    <label>Card Background</label>
+                    <input type="color" id="canvas-bg" value="#ffffff" onchange="changeCanvasBg()" style="width: 100%; height: 40px; padding: 2px; border: 1px solid var(--saas-border); border-radius: 4px; cursor: pointer;">
+                </div>
+
+                <div style="margin: 24px 0; border-top: 1px solid var(--saas-border);"></div>
+
+                <h3>Element Settings</h3>
+
+                <div id="no-selection-msg" class="no-selection">
+                    <span class="dashicons dashicons-edit-large" style="font-size: 24px; width: 24px; height: 24px; color: #9CA3AF; margin-bottom: 8px;"></span><br>
+                    Select an element on the canvas to edit its properties.
+                </div>
+
+                <div id="properties-panel" class="element-settings">
+                    <div class="saas-form-group">
+                        <label>Font Size (px)</label>
+                        <input type="number" id="prop-fontsize" class="saas-input" oninput="updateElement()">
+                    </div>
+                    <div class="saas-form-group">
+                        <label>Text Color</label>
+                        <input type="color" id="prop-color" onchange="updateElement()" style="width: 100%; height: 40px; padding: 2px; border: 1px solid var(--saas-border); border-radius: 4px; cursor: pointer;">
+                    </div>
+                    <button type="button" class="saas-btn saas-btn-danger" style="width:100%; margin-top: 10px;" onclick="deleteSelectedElement()">
+                        <span class="dashicons dashicons-trash" style="margin-right: 5px;"></span> Delete Element
+                    </button>
                 </div>
             </div>
 
-            <div class="builder-tool-group" style="max-height: 250px; overflow-y: auto; padding-right: 5px;">
-                <h3>Add Elements</h3>
-                <button type="button" class="tool-btn" onclick="addTextElement('School Name', '{{SCHOOL_NAME}}', 16, 'bold', '#000000')">+ School Name Header</button>
-                <button type="button" class="tool-btn" onclick="addTextElement('School Address', '{{SCHOOL_ADDRESS}}', 10, 'normal', '#333333')">+ School Address</button>
-                <button type="button" class="tool-btn" onclick="addTextElement('School Contact', '{{SCHOOL_CONTACT}} | {{SCHOOL_EMAIL}}', 10, 'normal', '#333333')">+ School Contact</button>
-                <button type="button" class="tool-btn" onclick="addTextElement('Student Name', '{{STUDENT_NAME}}', 18, 'bold', '#4F46E5')">+ Dynamic Student Name</button>
-                <button type="button" class="tool-btn" onclick="addTextElement('Class Info', 'Class: {{CLASS_INFO}}', 12, 'normal', '#333333')">+ Dynamic Class</button>
-                <button type="button" class="tool-btn" onclick="addTextElement('Roll No Info', 'Roll No: {{ROLL_NO}}', 12, 'normal', '#333333')">+ Dynamic Roll No</button>
-                <button type="button" class="tool-btn" onclick="addTextElement('DOB Info', 'DOB: {{DOB}}', 12, 'normal', '#333333')">+ Dynamic DOB</button>
-                <button type="button" class="tool-btn" onclick="addTextElement('Blood Group', 'Blood Group: {{BLOOD_GROUP}}', 12, 'normal', '#333333')">+ Dynamic Blood Group</button>
-                <button type="button" class="tool-btn" onclick="addTextElement('Admission No', 'Admission No: {{ADMISSION_NO}}', 12, 'normal', '#333333')">+ Dynamic Admission No</button>
-                <button type="button" class="tool-btn" onclick="addTextElement('Father Name', 'Father: {{FATHER_NAME}}', 12, 'normal', '#333333')">+ Dynamic Father Name</button>
-                <button type="button" class="tool-btn" onclick="addTextElement('Mother Name', 'Mother: {{MOTHER_NAME}}', 12, 'normal', '#333333')">+ Dynamic Mother Name</button>
-                <button type="button" class="tool-btn" onclick="addTextElement('Phone Number', 'Phone: {{PHONE}}', 12, 'normal', '#333333')">+ Dynamic Phone</button>
-                <button type="button" class="tool-btn" onclick="addTextElement('Student Address', '{{ADDRESS}}', 12, 'normal', '#333333')">+ Dynamic Student Address</button>
-                <button type="button" class="tool-btn" onclick="addPhotoElement()">+ Dynamic Student Photo</button>
-                <button type="button" class="tool-btn" onclick="addTextElement('Custom Text', 'Custom Text Here', 12, 'normal', '#000000')">+ Static Text</button>
-            </div>
-
-            <div class="properties-panel" id="properties-panel">
-                <h3>Edit Element</h3>
-                <div class="saas-form-group">
-                    <label>Font Size (px)</label>
-                    <input type="number" id="prop-fontsize" class="saas-input" oninput="updateElement()">
-                </div>
-                <div class="saas-form-group">
-                    <label>Text Color</label>
-                    <input type="color" id="prop-color" onchange="updateElement()">
-                </div>
-                <button type="button" class="saas-btn saas-btn-danger" style="width:100%; margin-top:10px;" onclick="deleteSelectedElement()">Delete Element</button>
-            </div>
-
-            <div style="margin-top: 30px;">
+            <div class="save-panel">
                 <form method="post" id="save-template-form" onsubmit="prepareTemplateSave()">
                     <?php wp_nonce_field('save_builder_template', 'builder_nonce'); ?>
                     <input type="hidden" name="orientation" id="save-orientation" value="horizontal">
                     <input type="hidden" name="template_html" id="save-html" value="">
-                    <button type="submit" name="save_custom_template" class="saas-btn saas-btn-primary" style="width:100%;">Save Template</button>
+                    <button type="submit" name="save_custom_template" class="saas-btn saas-btn-primary" style="width:100%; padding: 12px; font-size: 15px;">
+                        <span class="dashicons dashicons-cloud-saved" style="margin-right: 8px;"></span> Save & Publish
+                    </button>
                 </form>
-            </div>
-        </div>
-
-        <!-- Canvas -->
-        <div class="builder-canvas-wrapper">
-            <div id="canvas" class="builder-canvas horizontal" style="background-color: #ffffff;">
-                <!-- Droppable elements will go here -->
             </div>
         </div>
     </div>
@@ -285,14 +373,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_custom_template'
         el.classList.add('selected');
 
         const props = document.getElementById('properties-panel');
+        const noSelection = document.getElementById('no-selection-msg');
+
         if (el.classList.contains('text-element')) {
+            noSelection.style.display = 'none';
             props.classList.add('active');
             document.getElementById('prop-fontsize').value = parseInt(window.getComputedStyle(el).fontSize);
 
             // Convert rgb to hex for color picker
             const rgb = window.getComputedStyle(el).color;
             document.getElementById('prop-color').value = rgbToHex(rgb);
+        } else if (el.classList.contains('photo-element')) {
+            noSelection.style.display = 'none';
+            props.classList.remove('active');
         } else {
+            noSelection.style.display = 'block';
             props.classList.remove('active');
         }
     }
@@ -372,11 +467,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_custom_template'
     }
 
     // Deselect if clicking canvas directly
-    document.getElementById('canvas').addEventListener('mousedown', function(e) {
-        if(e.target === this) {
+    document.getElementById('workspace').addEventListener('mousedown', function(e) {
+        if(e.target === this || e.target === document.getElementById('canvas')) {
             if (selectedElement) selectedElement.classList.remove('selected');
             selectedElement = null;
             document.getElementById('properties-panel').classList.remove('active');
+            document.getElementById('no-selection-msg').style.display = 'block';
         }
     });
 </script>

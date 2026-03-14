@@ -114,7 +114,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_student_form']
                             <option value="0">-- Default Settings / Unassigned --</option>
                             <?php
                             $schools = school_id_card_maker_get_all_schools();
-                            $current_school_id = isset($student->school_id) ? $student->school_id : 0;
+                            $global_school_id = get_user_meta(get_current_user_id(), 'school_id_card_active_school', true);
+                            $current_school_id = isset($student->school_id) ? $student->school_id : ($global_school_id ? $global_school_id : 0);
                             foreach ($schools as $s) {
                                 echo '<option value="' . esc_attr($s->id) . '" ' . selected($current_school_id, $s->id, false) . '>' . esc_html($s->school_name) . '</option>';
                             }

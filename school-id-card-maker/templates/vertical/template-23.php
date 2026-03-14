@@ -11,14 +11,17 @@
             <?php endif; ?>
         </div>
         <div class="details">
-            <h3 class="name" style="color: #5A2A82; font-size: 15px; margin-bottom: 6px;"><?php echo esc_html($student->student_name); ?></h3>
-            <table style="width: 85%;">
-                <tr><td>Class:</td><td><?php echo esc_html($student->class . ' ' . $student->section); ?></td></tr>
-                <tr><td>Roll No:</td><td><?php echo esc_html($student->roll_no); ?></td></tr>
-                <tr><td>DOB:</td><td><?php echo esc_html($student->dob); ?></td></tr>
-                <tr><td>Blood:</td><td><?php echo esc_html($student->blood_group); ?></td></tr>
+            <h3 class="name" style="color: #5A2A82; font-size: 15px; margin-bottom: 4px;"><?php echo esc_html($student->student_name); ?></h3>
+            <table style="width: 90%;">
+                <?php if(!empty($student->class)): ?><tr><td>Class:</td><td><?php echo esc_html($student->class . ' ' . $student->section); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->roll_no)): ?><tr><td>Roll No:</td><td><?php echo esc_html($student->roll_no); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->dob)): ?><tr><td>DOB:</td><td><?php echo esc_html($student->dob); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->blood_group)): ?><tr><td>Blood:</td><td><?php echo esc_html($student->blood_group); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->father_name)): ?><tr><td>Father:</td><td><?php echo esc_html($student->father_name); ?></td></tr><?php endif; ?>
+                <?php if(!empty($student->mother_name)): ?><tr><td>Mother:</td><td><?php echo esc_html($student->mother_name); ?></td></tr><?php endif; ?>
                 <?php if(!empty($student->phone)): ?><tr><td>Phone:</td><td><?php echo esc_html($student->phone); ?></td></tr><?php endif; ?>
             </table>
+            <?php if(!empty($student->address)): ?><p style="font-size: 9px; line-height: 1.1; color: #333; margin: 3px auto 0 auto; text-align: left; width: 90%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;"><strong>Address:</strong> <?php echo esc_html($student->address); ?></p><?php endif; ?>
         </div>
     </div>
     <div class="footer" style="background-color: #5A2A82; color: #ffffff;">
