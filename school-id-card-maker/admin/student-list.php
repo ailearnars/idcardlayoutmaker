@@ -131,7 +131,8 @@ $total_pages = ceil($total_students / $limit);
                                     <a href="?page=school-id-card-maker-add&id=<?php echo esc_attr($student->id); ?>" class="saas-action-edit">Edit</a>
                                     <a href="<?php echo wp_nonce_url("?page=school-id-card-maker&action=delete&id={$student->id}", 'delete_student'); ?>" class="saas-action-delete" onclick="return confirm('Are you sure you want to delete this student?');">Delete</a>
                                     <a href="?page=school-id-card-maker-generate&action=single&student_id=<?php echo esc_attr($student->id); ?>" class="saas-action-generate">Generate</a>
-                                    <form method="post" action="?page=school-id-card-maker-generate" style="display:inline; margin:0; padding:0;">
+                                    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="display:inline; margin:0; padding:0;">
+                                        <input type="hidden" name="action" value="school_id_card_maker_generate">
                                         <?php wp_nonce_field('generate_cards', 'school_id_card_maker_generate_nonce'); ?>
                                         <input type="hidden" name="student_id" value="<?php echo esc_attr($student->id); ?>">
                                         <input type="hidden" name="orientation" value="horizontal">

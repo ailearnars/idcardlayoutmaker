@@ -24,12 +24,18 @@
     padding: 24px;
     border-radius: var(--saas-radius);
     min-height: calc(100vh - 80px);
-    animation: saas-fade-in 0.3s ease-out;
+    animation: saas-fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes saas-fade-in {
-    from { opacity: 0; transform: translateY(5px); }
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* Smooth all standard transitions */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--saas-border) transparent;
 }
 
 .saas-wrap h1 {
@@ -162,7 +168,13 @@
     background-color: #fff;
     border: 1px solid var(--saas-border);
     border-radius: var(--saas-radius);
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition: border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s ease;
+}
+
+.saas-input:hover,
+.saas-select:hover,
+.saas-textarea:hover {
+    border-color: #D1D5DB;
 }
 
 .saas-input:focus,
@@ -170,7 +182,8 @@
 .saas-textarea:focus {
     outline: 0;
     border-color: var(--saas-primary);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+    transform: translateY(-1px);
 }
 
 .saas-radio-group {
@@ -285,7 +298,7 @@
     border-radius: var(--saas-radius);
     padding: 20px;
     text-align: center;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -293,8 +306,8 @@
 }
 
 .saas-template-card:hover {
-    box-shadow: var(--saas-shadow);
-    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.05);
+    transform: translateY(-4px);
     border-color: var(--saas-primary);
 }
 
