@@ -31,8 +31,21 @@ if ($current_school_filter > 0) {
     $args['school_id'] = $current_school_filter;
 }
 
+$search_query = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
+if (!empty($search_query)) {
+    $args['search'] = $search_query;
+}
+
+$class_filter = isset($_GET['class_filter']) ? sanitize_text_field($_GET['class_filter']) : '';
+if (!empty($class_filter)) {
+    $args['class'] = $class_filter;
+}
+
 $students = school_id_card_maker_get_students($args);
 $total_students = school_id_card_maker_get_students_count($args);
+
+// Get unique classes for the dropdown filter based on the current school
+$unique_classes = school_id_card_maker_get_unique_classes($current_school_filter);
 $total_pages = ceil($total_students / $limit);
 ?>
 
@@ -40,9 +53,55 @@ $total_pages = ceil($total_students / $limit);
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--saas-border); padding-bottom: 16px; margin-bottom: 24px;">
         <h1 style="border: none; margin: 0; padding: 0;">Student List</h1>
         <div style="display: flex; gap: 16px; align-items: center;">
+            <form id="student-list-filter-form" method="get" action="" style="display: flex; gap: 10px; align-items: center;">
+                <input type="hidden" name="page" value="school-id-card-maker">
+
+                <input type="search" id="live-search-input" name="s" value="<?php echo esc_attr($search_query); ?>" class="saas-input" placeholder="Search by Name or Roll No..." style="width: 250px;">
+
+                <select name="class_filter" class="saas-select" style="width: auto;" onchange="document.getElementById('student-list-filter-form').submit();">
+                    <option value="">All Classes</option>
+                    <?php foreach ($unique_classes as $cls) : ?>
+                        <?php if(!empty($cls)): ?>
+                        <option value="<?php echo esc_attr($cls); ?>" <?php selected($class_filter, $cls); ?>><?php echo esc_html($cls); ?></option>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </select>
+
+                <button type="submit" class="saas-btn saas-btn-secondary" style="display:none;">Filter</button>
+                <?php if (!empty($search_query) || !empty($class_filter)): ?>
+                    <a href="?page=school-id-card-maker" class="saas-btn saas-btn-secondary" style="color: var(--saas-danger) !important; border-color: transparent;">Clear</a>
+                <?php endif; ?>
+            </form>
+
             <a href="?page=school-id-card-maker-add" class="saas-btn saas-btn-primary">Add New Student</a>
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let timer;
+            const searchInput = document.getElementById('live-search-input');
+            const filterForm = document.getElementById('student-list-filter-form');
+
+            // Move cursor to end of input if already has text
+            if(searchInput.value.length > 0) {
+                searchInput.focus();
+                let val = searchInput.value;
+                searchInput.value = '';
+                searchInput.value = val;
+            }
+
+            searchInput.addEventListener('keyup', function(e) {
+                clearTimeout(timer);
+                // Don't trigger on functional keys
+                if(e.keyCode === 9 || e.keyCode === 16 || e.keyCode === 17 || e.keyCode === 18) return;
+
+                timer = setTimeout(() => {
+                    filterForm.submit();
+                }, 600); // Wait 600ms after user stops typing
+            });
+        });
+    </script>
 
     <div class="saas-table-container">
         <table class="saas-table">
