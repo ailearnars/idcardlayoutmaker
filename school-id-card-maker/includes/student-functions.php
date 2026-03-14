@@ -99,8 +99,11 @@ function school_id_card_maker_get_school($id) {
 function school_id_card_maker_add_school($data) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'school_id_schools';
+    // school_name, school_logo, school_address, school_contact, school_email, school_website
     $format = array('%s', '%s', '%s', '%s', '%s', '%s');
     $wpdb->insert($table_name, $data, $format);
+    // Explicitly show error for debugging if insert fails
+    // if ($wpdb->last_error) { error_log("DB Error: " . $wpdb->last_error); }
     return $wpdb->insert_id;
 }
 

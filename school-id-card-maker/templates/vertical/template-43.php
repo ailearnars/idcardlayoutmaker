@@ -21,6 +21,7 @@
                 <?php if(!empty($student->mother_name)): ?><tr><td>Mother:</td><td><?php echo esc_html($student->mother_name); ?></td></tr><?php endif; ?>
                 <?php if(!empty($student->phone)): ?><tr><td>Phone:</td><td><?php echo esc_html($student->phone); ?></td></tr><?php endif; ?>
             </table>
+            <?php if(!empty($student->address)): ?><p style="font-size: 9px; line-height: 1.1; color: #333; margin: 3px auto 0 auto; text-align: left; width: 90%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;"><strong>Address:</strong> <?php echo esc_html($student->address); ?></p><?php endif; ?>
         </div>
     </div>
     <div class="footer" style="background-color: #9B2226; color: #ffffff;">

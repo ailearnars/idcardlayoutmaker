@@ -19,10 +19,42 @@ require_once SCHOOL_ID_CARD_MAKER_DIR . 'includes/database.php';
 require_once SCHOOL_ID_CARD_MAKER_DIR . 'includes/student-functions.php';
 require_once SCHOOL_ID_CARD_MAKER_DIR . 'includes/pdf-generator.php';
 
+// Database Version tracking
+global $school_id_card_db_version;
+$school_id_card_db_version = '1.2';
+
 // Activation Hook
 register_activation_hook( __FILE__, 'school_id_card_maker_activate' );
 function school_id_card_maker_activate() {
     school_id_card_maker_create_table();
+}
+
+// Database Upgrade Routine for existing users
+add_action( 'plugins_loaded', 'school_id_card_maker_update_db_check' );
+function school_id_card_maker_update_db_check() {
+    global $school_id_card_db_version;
+    if ( get_site_option( 'school_id_card_db_version' ) != $school_id_card_db_version ) {
+        school_id_card_maker_create_table();
+    }
+}
+
+// Global active school switcher logic
+add_action('admin_init', 'school_id_card_maker_handle_global_school_switch');
+function school_id_card_maker_handle_global_school_switch() {
+    if (isset($_POST['global_school_switch']) && isset($_POST['global_school_id'])) {
+        if (!isset($_POST['global_school_nonce']) || !wp_verify_nonce($_POST['global_school_nonce'], 'switch_global_school')) {
+            wp_die('Security check failed');
+        }
+        if (!current_user_can('manage_options')) {
+            wp_die('Unauthorized');
+        }
+
+        $school_id = intval($_POST['global_school_id']);
+        update_user_meta(get_current_user_id(), 'school_id_card_active_school', $school_id);
+
+        wp_redirect(remove_query_arg(array('global_school_switch', 'global_school_id', 'global_school_nonce')));
+        exit;
+    }
 }
 
 // Register Admin Menu
@@ -103,7 +135,42 @@ function school_id_card_maker_admin_menu() {
 }
 
 // Include page logic
+// Helper to render global switcher UI on top of pages
+function school_id_card_maker_render_global_switcher() {
+    $schools = school_id_card_maker_get_all_schools();
+    $active_school_id = get_user_meta(get_current_user_id(), 'school_id_card_active_school', true);
+    if (!$active_school_id) $active_school_id = 0;
+
+    echo '<div style="background: #fff; padding: 15px 20px; margin: 15px 20px 0 0; border-radius: 8px; border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">';
+    echo '<div><strong><span class="dashicons dashicons-admin-home" style="color: #4F46E5; margin-right: 5px;"></span> Active Working Context:</strong> ' . ($active_school_id ? esc_html(school_id_card_maker_get_school($active_school_id)->school_name ?? 'Unknown') : 'Global / All Schools') . '</div>';
+
+    echo '<form method="post" action="" style="display:flex; gap: 10px; align-items: center; margin: 0;">';
+    wp_nonce_field('switch_global_school', 'global_school_nonce');
+    echo '<select name="global_school_id" id="global_school_switcher" class="saas-select" style="min-width: 250px;" onchange="this.form.submit()">';
+    echo '<option value="0">-- All Schools (Global) --</option>';
+    foreach ($schools as $s) {
+        echo '<option value="' . esc_attr($s->id) . '" ' . selected($active_school_id, $s->id, false) . '>' . esc_html($s->school_name) . '</option>';
+    }
+    echo '</select>';
+    echo '<input type="hidden" name="global_school_switch" value="1">';
+    echo '</form>';
+    echo '</div>';
+
+    // Inject Select2 for live search
+    echo '<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />';
+    echo '<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>';
+    echo '<script>
+        jQuery(document).ready(function($) {
+            $("#global_school_switcher").select2({
+                placeholder: "Search and switch school...",
+                allowClear: false
+            });
+        });
+    </script>';
+}
+
 function school_id_card_maker_student_list_page() {
+    school_id_card_maker_render_global_switcher();
     require_once SCHOOL_ID_CARD_MAKER_DIR . 'admin/student-list.php';
 }
 
@@ -112,6 +179,7 @@ function school_id_card_maker_schools_page() {
 }
 
 function school_id_card_maker_add_student_page() {
+    school_id_card_maker_render_global_switcher();
     require_once SCHOOL_ID_CARD_MAKER_DIR . 'admin/student-form.php';
 }
 
@@ -120,8 +188,10 @@ function school_id_card_maker_templates_page() {
 }
 
 function school_id_card_maker_generate_page() {
+    school_id_card_maker_render_global_switcher();
     require_once SCHOOL_ID_CARD_MAKER_DIR . 'admin/generate-card.php';
 }
+
 
 function school_id_card_maker_builder_page() {
     require_once SCHOOL_ID_CARD_MAKER_DIR . 'admin/id-card-builder.php';

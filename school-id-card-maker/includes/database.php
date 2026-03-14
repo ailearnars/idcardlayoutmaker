@@ -53,4 +53,7 @@ function school_id_card_maker_create_table() {
     if (empty($row)) {
         $wpdb->query("ALTER TABLE $schools_table ADD school_website varchar(255) DEFAULT NULL");
     }
+
+    global $school_id_card_db_version;
+    update_option( 'school_id_card_db_version', $school_id_card_db_version );
 }
