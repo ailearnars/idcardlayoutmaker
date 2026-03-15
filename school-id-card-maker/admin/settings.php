@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
 
     update_option('school_id_card_default_school_name', sanitize_text_field($_POST['default_school_name']));
     update_option('school_id_card_default_school_logo', esc_url_raw($_POST['default_school_logo']));
+    update_option('school_id_card_default_principal_signature', esc_url_raw($_POST['default_principal_signature']));
     update_option('school_id_card_default_school_address', sanitize_textarea_field($_POST['default_school_address']));
     update_option('school_id_card_default_school_contact', sanitize_text_field($_POST['default_school_contact']));
     update_option('school_id_card_default_school_email', sanitize_email($_POST['default_school_email']));
@@ -24,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
 
 $default_school_name = get_option('school_id_card_default_school_name', '');
 $default_school_logo = get_option('school_id_card_default_school_logo', '');
+$default_principal_signature = get_option('school_id_card_default_principal_signature', '');
 $default_school_address = get_option('school_id_card_default_school_address', '');
 $default_school_contact = get_option('school_id_card_default_school_contact', '');
 $default_school_email = get_option('school_id_card_default_school_email', '');
@@ -46,6 +48,11 @@ $default_school_website = get_option('school_id_card_default_school_website', ''
             <div class="saas-form-group">
                 <label for="default_school_logo">Default School Logo URL</label>
                 <input name="default_school_logo" type="url" id="default_school_logo" value="<?php echo esc_url($default_school_logo); ?>" class="saas-input" placeholder="https://example.com/logo.png">
+            </div>
+
+            <div class="saas-form-group">
+                <label for="default_principal_signature">Default Principal Signature URL</label>
+                <input name="default_principal_signature" type="url" id="default_principal_signature" value="<?php echo esc_url($default_principal_signature); ?>" class="saas-input" placeholder="https://example.com/signature.png">
             </div>
 
             <div style="border-top: 1px solid var(--saas-border); margin: 24px 0;"></div>
