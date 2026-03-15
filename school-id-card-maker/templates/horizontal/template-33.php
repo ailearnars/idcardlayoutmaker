@@ -40,4 +40,9 @@
             echo esc_html(implode(" | ", $c_info));
         ?></p>
     </div>
+
+    <?php $sig_url = !empty($student->principal_signature) ? $student->principal_signature : get_option("school_id_card_default_principal_signature", "");
+    if(!empty($sig_url)): ?>
+        <img src="<?php echo esc_url($sig_url); ?>" alt="Signature" style="height: 30px; position: absolute; bottom: 40px; right: 10px; z-index: 10;">
+    <?php endif; ?>
 </div>

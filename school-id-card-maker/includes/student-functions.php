@@ -117,8 +117,8 @@ function school_id_card_maker_get_school($id) {
 function school_id_card_maker_add_school($data) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'school_id_schools';
-    // school_name, school_logo, school_address, school_contact, school_email, school_website
-    $format = array('%s', '%s', '%s', '%s', '%s', '%s');
+    // school_name, school_logo, principal_signature, school_address, school_contact, school_email, school_website
+    $format = array('%s', '%s', '%s', '%s', '%s', '%s', '%s');
     $wpdb->insert($table_name, $data, $format);
     // Explicitly show error for debugging if insert fails
     // if ($wpdb->last_error) { error_log("DB Error: " . $wpdb->last_error); }
@@ -128,7 +128,7 @@ function school_id_card_maker_add_school($data) {
 function school_id_card_maker_update_school($id, $data) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'school_id_schools';
-    $format = array('%s', '%s', '%s', '%s', '%s', '%s');
+    $format = array('%s', '%s', '%s', '%s', '%s', '%s', '%s');
     $where = array('id' => $id);
     $where_format = array('%d');
     return $wpdb->update($table_name, $data, $where, $format, $where_format);
@@ -138,59 +138,4 @@ function school_id_card_maker_delete_school($id) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'school_id_schools';
     return $wpdb->delete($table_name, array('id' => $id), array('%d'));
-}
-
-/**
- * Handles image upload, converts to WebP, and returns the URL.
- */
-function school_id_card_maker_handle_image_upload($file_array) {
-    if (empty($file_array['name']) || empty($file_array['tmp_name'])) {
-        return false;
-    }
-
-    if (!function_exists('wp_handle_upload')) {
-        require_once(ABSPATH . 'wp-admin/includes/file.php');
-    }
-
-    $upload_overrides = array('test_form' => false);
-    $movefile = wp_handle_upload($file_array, $upload_overrides);
-
-    if ($movefile && !isset($movefile['error'])) {
-        $file_path = $movefile['file'];
-        $file_url = $movefile['url'];
-        $mime_type = $movefile['type'];
-
-        // Convert to WebP if possible
-        if (function_exists('imagewebp') && in_array($mime_type, ['image/jpeg', 'image/png', 'image/gif'])) {
-            $image = null;
-            if ($mime_type == 'image/jpeg') {
-                $image = @imagecreatefromjpeg($file_path);
-            } elseif ($mime_type == 'image/png') {
-                $image = @imagecreatefrompng($file_path);
-                if ($image) {
-                    imagepalettetotruecolor($image);
-                    imagealphablending($image, true);
-                    imagesavealpha($image, true);
-                }
-            } elseif ($mime_type == 'image/gif') {
-                $image = @imagecreatefromgif($file_path);
-            }
-
-            if ($image) {
-                $webp_path = preg_replace('/\.(jpg|jpeg|png|gif)$/i', '.webp', $file_path);
-                $webp_url = preg_replace('/\.(jpg|jpeg|png|gif)$/i', '.webp', $file_url);
-
-                if (imagewebp($image, $webp_path, 80)) {
-                    imagedestroy($image);
-                    // Optionally delete the original file
-                    @unlink($file_path);
-                    return esc_url_raw($webp_url);
-                }
-                imagedestroy($image);
-            }
-        }
-
-        return esc_url_raw($file_url);
-    }
-    return false;
 }
