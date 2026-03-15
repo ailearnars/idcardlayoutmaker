@@ -13,7 +13,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
     }
 
     update_option('school_id_card_default_school_name', sanitize_text_field($_POST['default_school_name']));
-    update_option('school_id_card_default_school_logo', esc_url_raw($_POST['default_school_logo']));
+
+    // Handle logo upload
+    $logo_url = esc_url_raw($_POST['default_school_logo']);
+    if (!empty($_FILES['default_school_logo_upload']['name'])) {
+        $uploaded_url = school_id_card_maker_handle_image_upload($_FILES['default_school_logo_upload']);
+        if ($uploaded_url) {
+            $logo_url = $uploaded_url;
+        }
+    }
+    update_option('school_id_card_default_school_logo', $logo_url);
+
     update_option('school_id_card_default_school_address', sanitize_textarea_field($_POST['default_school_address']));
     update_option('school_id_card_default_school_contact', sanitize_text_field($_POST['default_school_contact']));
     update_option('school_id_card_default_school_email', sanitize_email($_POST['default_school_email']));
@@ -34,7 +44,7 @@ $default_school_website = get_option('school_id_card_default_school_website', ''
     <h1>Settings</h1>
 
     <div class="saas-card" style="max-width: 600px;">
-        <form method="post" action="">
+        <form method="post" action="" enctype="multipart/form-data">
             <?php wp_nonce_field('save_settings', 'school_id_card_maker_settings_nonce'); ?>
 
             <h2>General Information</h2>
@@ -44,8 +54,15 @@ $default_school_website = get_option('school_id_card_default_school_website', ''
             </div>
 
             <div class="saas-form-group">
-                <label for="default_school_logo">Default School Logo URL</label>
-                <input name="default_school_logo" type="url" id="default_school_logo" value="<?php echo esc_url($default_school_logo); ?>" class="saas-input" placeholder="https://example.com/logo.png">
+                <label for="default_school_logo_upload">Default School Logo (Upload)</label>
+                <input name="default_school_logo_upload" type="file" id="default_school_logo_upload" accept="image/*" class="saas-input" style="padding: 8px;">
+                <p class="description" style="margin-top: 4px; font-size: 12px; color: var(--saas-text-muted);">Upload a new logo image. It will be automatically converted to WebP.</p>
+                <?php if ($default_school_logo): ?>
+                    <div style="margin-top: 10px;">
+                        <img src="<?php echo esc_url($default_school_logo); ?>" alt="Current Logo" style="max-height: 80px; max-width: 100%; border: 1px solid var(--saas-border); border-radius: 4px;">
+                    </div>
+                <?php endif; ?>
+                <input name="default_school_logo" type="hidden" id="default_school_logo" value="<?php echo esc_attr($default_school_logo); ?>">
             </div>
 
             <div style="border-top: 1px solid var(--saas-border); margin: 24px 0;"></div>
