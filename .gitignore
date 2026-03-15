@@ -46,8 +46,3 @@ wp-config.php
 # Note: If you wish to whitelist themes,
 # uncomment the next line
 #/wp-content/themes
-
-school-id-card-maker/vendor/
-school-id-card-maker/templates/
-school-id-card-maker/vendor/
-school-id-card-maker/assets/
