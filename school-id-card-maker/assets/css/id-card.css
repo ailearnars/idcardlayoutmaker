@@ -3,7 +3,7 @@
     box-sizing: border-box;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     margin: 0 auto;
     background: #fff;
     border: 1px solid #ddd;

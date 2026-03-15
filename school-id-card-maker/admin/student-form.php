@@ -18,18 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_student_form']
         wp_die('Unauthorized');
     }
 
-    $photo_url = esc_url_raw($_POST['student_photo']);
-    if (!empty($_FILES['student_photo_upload']['name'])) {
-        $uploaded_url = school_id_card_maker_handle_image_upload($_FILES['student_photo_upload']);
-        if ($uploaded_url) {
-            $photo_url = $uploaded_url;
-        }
-    }
-
     $data = array(
         'school_id'     => intval($_POST['school_id']),
         'student_name'  => sanitize_text_field($_POST['student_name']),
-        'student_photo' => $photo_url,
+        'student_photo' => esc_url_raw($_POST['student_photo']),
         'admission_no'  => sanitize_text_field($_POST['admission_no']),
         'class'         => sanitize_text_field($_POST['class']),
         'section'       => sanitize_text_field($_POST['section']),
@@ -63,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_student_form']
     </h1>
 
     <div class="saas-card">
-        <form method="post" action="" enctype="multipart/form-data">
+        <form method="post" action="">
             <?php wp_nonce_field('save_student_data', 'school_id_card_maker_nonce'); ?>
 
             <div class="saas-grid-2">
@@ -76,15 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_student_form']
                     </div>
 
                     <div class="saas-form-group">
-                        <label for="student_photo_upload">Photo (Upload)</label>
-                        <input type="file" name="student_photo_upload" id="student_photo_upload" accept="image/*" class="saas-input" style="padding: 8px;">
-                        <p class="description" style="margin-top: 4px; font-size: 12px; color: var(--saas-text-muted);">Upload a photo. It will be converted to WebP automatically.</p>
-                        <?php if (!empty($student->student_photo)): ?>
-                            <div style="margin-top: 10px;">
-                                <img src="<?php echo esc_url($student->student_photo); ?>" alt="Current Photo" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; border: 1px solid var(--saas-border);">
-                            </div>
-                        <?php endif; ?>
-                        <input type="hidden" name="student_photo" value="<?php echo esc_attr($student->student_photo ?? ''); ?>">
+                        <label for="student_photo">Photo URL</label>
+                        <input name="student_photo" type="url" id="student_photo" value="<?php echo esc_url($student->student_photo ?? ''); ?>" class="saas-input">
+                        <p class="description" style="margin-top: 4px; font-size: 12px; color: var(--saas-text-muted);">Optional: URL to the student's photo.</p>
                     </div>
 
                     <div class="saas-form-group">
