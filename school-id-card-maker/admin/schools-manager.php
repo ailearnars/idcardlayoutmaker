@@ -33,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_school'])) {
     $data = array(
         'school_name'    => sanitize_text_field($_POST['school_name']),
         'school_logo'    => $logo_url,
+        'principal_signature' => esc_url_raw($_POST['principal_signature']),
         'school_address' => sanitize_textarea_field($_POST['school_address']),
         'school_contact' => sanitize_text_field($_POST['school_contact']),
         'school_email'   => sanitize_email($_POST['school_email']),
@@ -122,6 +123,11 @@ if ($action === 'list') {
                         </div>
                     <?php endif; ?>
                     <input type="hidden" name="school_logo" value="<?php echo esc_attr($school->school_logo ?? ''); ?>">
+                </div>
+
+                                <div class="saas-form-group">
+                    <label>Principal Signature URL</label>
+                    <input type="url" name="principal_signature" value="<?php echo esc_attr($school->principal_signature ?? ''); ?>" class="saas-input" placeholder="https://...">
                 </div>
 
                 <div class="saas-form-group">

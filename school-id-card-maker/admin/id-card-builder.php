@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_custom_template'
         background: var(--saas-bg);
         border: 1px solid var(--saas-border);
         border-radius: var(--saas-radius);
-        overflow: hidden;
+        overflow: visible;
         margin-top: 20px;
         box-shadow: var(--saas-shadow);
     }
@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_custom_template'
         background: #fff;
         position: relative;
         box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
-        overflow: hidden;
+        overflow: visible;
         transition: width 0.3s ease, height 0.3s ease;
     }
 
@@ -235,6 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_custom_template'
                 <button type="button" class="tool-btn" onclick="addTextElement('School Address', '{{SCHOOL_ADDRESS}}', 10, 'normal', '#333333')"><span class="dashicons dashicons-location"></span> School Address</button>
                 <button type="button" class="tool-btn" onclick="addTextElement('School Contact', '{{SCHOOL_CONTACT}} | {{SCHOOL_EMAIL}}', 10, 'normal', '#333333')"><span class="dashicons dashicons-phone"></span> School Contact</button>
                 <button type="button" class="tool-btn" onclick="addPhotoElement()"><span class="dashicons dashicons-format-image"></span> Student Photo</button>
+                <button type="button" class="tool-btn" onclick="addSignatureElement()"><span class="dashicons dashicons-welcome-write-blog"></span> Principal Signature</button>
                 <button type="button" class="tool-btn" onclick="addTextElement('Student Name', '{{STUDENT_NAME}}', 18, 'bold', '#4F46E5')"><span class="dashicons dashicons-admin-users"></span> Student Name</button>
                 <button type="button" class="tool-btn" onclick="addTextElement('Class Info', 'Class: {{CLASS_INFO}}', 12, 'normal', '#333333')"><span class="dashicons dashicons-welcome-learn-more"></span> Class</button>
                 <button type="button" class="tool-btn" onclick="addTextElement('Roll No Info', 'Roll No: {{ROLL_NO}}', 12, 'normal', '#333333')"><span class="dashicons dashicons-editor-ol"></span> Roll No</button>
@@ -365,6 +366,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_custom_template'
         selectElement(el);
     }
 
+    function addSignatureElement() {
+        const el = document.createElement('div');
+        el.className = 'draggable-element signature-element';
+        el.style.left = '100px';
+        el.style.top = '150px';
+        el.style.width = '80px';
+        el.style.height = '30px';
+        el.style.backgroundColor = '#f0fdf4';
+        el.style.border = '2px dashed #4ade80';
+        el.style.zIndex = zIndexCounter++;
+        el.style.display = 'flex';
+        el.style.alignItems = 'center';
+        el.style.justifyContent = 'center';
+        el.style.fontSize = '10px';
+        el.style.color = '#166534';
+
+        // Safe string placeholder for replacing later
+        el.innerHTML = `{{PRINCIPAL_SIGNATURE}}`;
+
+        makeDraggable(el);
+        document.getElementById('canvas').appendChild(el);
+        selectElement(el);
+    }
+
     function selectElement(el) {
         if (selectedElement) {
             selectedElement.classList.remove('selected');
@@ -383,7 +408,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_custom_template'
             // Convert rgb to hex for color picker
             const rgb = window.getComputedStyle(el).color;
             document.getElementById('prop-color').value = rgbToHex(rgb);
-        } else if (el.classList.contains('photo-element')) {
+        } else if (el.classList.contains('photo-element') || el.classList.contains('signature-element')) {
             noSelection.style.display = 'none';
             props.classList.remove('active');
         } else {
@@ -458,9 +483,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_custom_template'
 
         const elements = clone.querySelectorAll('.draggable-element');
         elements.forEach(el => {
-            el.classList.remove('draggable-element', 'text-element', 'photo-element', 'selected');
+            el.classList.remove('draggable-element', 'text-element', 'photo-element', 'signature-element', 'selected');
             el.style.border = 'none';
             el.style.cursor = 'default';
+            el.style.backgroundColor = 'transparent';
         });
 
         document.getElementById('save-html').value = clone.innerHTML;

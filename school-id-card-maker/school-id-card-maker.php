@@ -267,6 +267,7 @@ function school_id_card_maker_process_generation() {
                 if ($school) {
                     $student->school_name = $school->school_name;
                     $student->school_logo = $school->school_logo;
+                    $student->principal_signature = $school->principal_signature;
                     $student->school_address = $school->school_address;
                     $student->school_contact = $school->school_contact;
                     $student->school_email = $school->school_email;
@@ -305,6 +306,15 @@ function school_id_card_maker_process_generation() {
                     $photo_replacement = '<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:10px; color:#999; background:#eee; border:1px solid #ccc;">No Photo</div>';
                 }
                 $card_html = str_replace('{{STUDENT_PHOTO}}', $photo_replacement, $card_html);
+
+                $sig_url = !empty($student->principal_signature) ? $student->principal_signature : get_option("school_id_card_default_principal_signature", "");
+                if (!empty($sig_url)) {
+                    $sig_replacement = '<img src="' . esc_url($sig_url) . '" style="width:100%; height:100%; object-fit:contain;" alt="Principal Signature">';
+                } else {
+                    $sig_replacement = '';
+                }
+                $card_html = str_replace('{{PRINCIPAL_SIGNATURE}}', $sig_replacement, $card_html);
+
                 $html .= $card_html;
             } else {
                 ob_start();

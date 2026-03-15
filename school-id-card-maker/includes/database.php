@@ -15,6 +15,7 @@ function school_id_card_maker_create_table() {
         id int(9) NOT NULL AUTO_INCREMENT,
         school_name varchar(255) NOT NULL,
         school_logo text,
+        principal_signature text,
         school_address text,
         school_contact varchar(100),
         school_email varchar(100),
@@ -40,6 +41,7 @@ function school_id_card_maker_create_table() {
         mother_name varchar(255),
         school_name varchar(255),
         school_logo text,
+        principal_signature text,
         created_at datetime DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY  (id)
     ) $charset_collate;";
@@ -52,6 +54,11 @@ function school_id_card_maker_create_table() {
     $row = $wpdb->get_results( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$schools_table' AND column_name = 'school_website'" );
     if (empty($row)) {
         $wpdb->query("ALTER TABLE $schools_table ADD school_website varchar(255) DEFAULT NULL");
+    }
+
+    $row_sig = $wpdb->get_results( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$schools_table' AND column_name = 'principal_signature'" );
+    if (empty($row_sig)) {
+        $wpdb->query("ALTER TABLE $schools_table ADD principal_signature text DEFAULT NULL");
     }
 
     global $school_id_card_db_version;

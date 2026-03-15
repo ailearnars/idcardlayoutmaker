@@ -118,7 +118,7 @@ function school_id_card_maker_add_school($data) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'school_id_schools';
     // school_name, school_logo, school_address, school_contact, school_email, school_website
-    $format = array('%s', '%s', '%s', '%s', '%s', '%s');
+    $format = array('%s', '%s', '%s', '%s', '%s', '%s', '%s');
     $wpdb->insert($table_name, $data, $format);
     // Explicitly show error for debugging if insert fails
     // if ($wpdb->last_error) { error_log("DB Error: " . $wpdb->last_error); }
@@ -128,7 +128,7 @@ function school_id_card_maker_add_school($data) {
 function school_id_card_maker_update_school($id, $data) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'school_id_schools';
-    $format = array('%s', '%s', '%s', '%s', '%s', '%s');
+    $format = array('%s', '%s', '%s', '%s', '%s', '%s', '%s');
     $where = array('id' => $id);
     $where_format = array('%d');
     return $wpdb->update($table_name, $data, $where, $format, $where_format);

@@ -88,6 +88,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_student_form']
                     </div>
 
                     <div class="saas-form-group">
+                        <label for="student_photo_url">Photo URL (Fallback)</label>
+                        <input name="student_photo" type="url" id="student_photo_url" value="<?php echo esc_url($student->student_photo ?? ''); ?>" class="saas-input">
+                        <p class="description" style="margin-top: 4px; font-size: 12px; color: var(--saas-text-muted);">Optional: URL to the student's photo if not uploading.</p>
+                    </div>
+
+                    <div class="saas-form-group">
                         <label for="dob">Date of Birth</label>
                         <input name="dob" type="date" id="dob" value="<?php echo esc_attr($student->dob ?? ''); ?>" class="saas-input">
                     </div>
