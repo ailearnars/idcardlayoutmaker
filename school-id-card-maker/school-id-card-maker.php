@@ -2,7 +2,7 @@
 /**
  * Plugin Name: School ID Card Maker
  * Description: Create and generate school student ID cards automatically.
- * Version: 3.2.0
+ * Version: 3.3.0
  * Author: Neel Govind
  */
 
@@ -316,11 +316,27 @@ function school_id_card_maker_process_generation() {
 
         $html = preg_replace('/<div class="page-break"><\/div>$/', '', $html);
 
+        // Get global typography overrides
+        $global_font = get_option('school_id_card_global_font', 'Helvetica, Arial, sans-serif');
+        $global_size = get_option('school_id_card_global_size', '11px');
+
+        // Strip tags but keep quotes intact for CSS
+        $safe_font = wp_strip_all_tags($global_font);
+        $safe_size = wp_strip_all_tags($global_size);
+
+        $typography_css = '
+        .id-card { font-family: ' . $safe_font . ' !important; }
+        .id-card table, .id-card p, .id-card td { font-size: ' . $safe_size . ' !important; }
+        ';
+
         if ($format === 'pdf') {
-            school_id_card_maker_generate_pdf($html, $orientation, 'id-cards.pdf');
+            // Inject typography css into the generated html string before passing to dompdf
+            $html_with_typography = '<style>' . $typography_css . '</style>' . $html;
+            school_id_card_maker_generate_pdf($html_with_typography, $orientation, 'id-cards.pdf');
         } else if ($format === 'png') {
             $css_path = SCHOOL_ID_CARD_MAKER_DIR . 'assets/css/id-card.css';
             $css_content = file_exists($css_path) ? file_get_contents($css_path) : '';
+            $css_content .= $typography_css;
 
             echo '<html><head><style>' . $css_content . '</style></head><body>';
             echo '<h2>Preparing PNG Download...</h2>';
@@ -350,6 +366,7 @@ function school_id_card_maker_process_generation() {
         } else if ($format === 'print') {
             $css_path = SCHOOL_ID_CARD_MAKER_DIR . 'assets/css/id-card.css';
             $css_content = file_exists($css_path) ? file_get_contents($css_path) : '';
+            $css_content .= $typography_css;
 
             $page_css = '';
             if ($orientation === 'horizontal') {
