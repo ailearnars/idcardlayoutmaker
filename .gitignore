@@ -48,3 +48,6 @@ wp-config.php
 #/wp-content/themes
 
 school-id-card-maker/vendor/
+school-id-card-maker/templates/
+school-id-card-maker/vendor/
+school-id-card-maker/assets/

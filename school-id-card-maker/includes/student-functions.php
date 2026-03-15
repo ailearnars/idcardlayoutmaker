@@ -99,6 +99,73 @@ function school_id_card_maker_delete_student($id) {
 }
 
 // -------------------
+// Image Upload & Compression Functions
+// -------------------
+
+function school_id_card_maker_handle_image_upload($file) {
+    if (empty($file['name'])) {
+        return new WP_Error('empty_file', 'No file uploaded.');
+    }
+
+    require_once(ABSPATH . 'wp-admin/includes/file.php');
+    require_once(ABSPATH . 'wp-admin/includes/image.php');
+
+    $overrides = array('test_form' => false);
+
+    // Attempt standard WP upload first
+    $movefile = wp_handle_upload($file, $overrides);
+
+    if ($movefile && !isset($movefile['error'])) {
+        $file_path = $movefile['file'];
+        $file_url = $movefile['url'];
+        $file_type = wp_check_filetype($file_path, null);
+
+        // Process Image: Resize if > 2000px, convert to WebP
+        $editor = wp_get_image_editor($file_path);
+
+        if (!is_wp_error($editor)) {
+            $size = $editor->get_size();
+            $changed = false;
+
+            // Compress / Resize if width or height is greater than 2000px
+            if ($size['width'] > 2000 || $size['height'] > 2000) {
+                $editor->resize(2000, 2000, false);
+                $changed = true;
+            }
+
+            // Convert to WebP
+            $path_info = pathinfo($file_path);
+            if (isset($path_info['extension']) && strtolower($path_info['extension']) !== 'webp') {
+                $webp_path = $path_info['dirname'] . '/' . $path_info['filename'] . '.webp';
+                $saved = $editor->save($webp_path, 'image/webp');
+
+                if (!is_wp_error($saved)) {
+                    // Update variables to point to the new webp file
+                    // Unlink the old non-webp file to save space
+                    @unlink($file_path);
+
+                    $file_path = $saved['path'];
+                    // Construct new URL by replacing the old file basename with the new webp basename
+                    $file_url = str_replace(wp_basename($movefile['file']), wp_basename($saved['path']), $movefile['url']);
+                    $changed = true;
+                }
+            } elseif ($changed) {
+                // If it was already a webp but we resized it, just save over the old file
+                $editor->save($file_path);
+            }
+        }
+
+        return array(
+            'file' => $file_path,
+            'url'  => $file_url,
+            'type' => 'image/webp' // After processing we prefer webp
+        );
+    } else {
+        return new WP_Error('upload_error', $movefile['error']);
+    }
+}
+
+// -------------------
 // Schools Functions
 // -------------------
 

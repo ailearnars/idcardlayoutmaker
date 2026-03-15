@@ -115,6 +115,11 @@ $preview_style = '<style>.preview-scaler .id-card { font-family: ' . $safe_font 
                     <option value="'Courier New', Courier, monospace" <?php selected($global_font, "'Courier New', Courier, monospace"); ?>>Courier New</option>
                     <option value="Tahoma, Geneva, sans-serif" <?php selected($global_font, "Tahoma, Geneva, sans-serif"); ?>>Tahoma</option>
                     <option value="'Trebuchet MS', Helvetica, sans-serif" <?php selected($global_font, "'Trebuchet MS', Helvetica, sans-serif"); ?>>Trebuchet MS</option>
+                    <option value="'Alice', serif" <?php selected($global_font, "'Alice', serif"); ?>>Alice</option>
+                    <option value="'Roboto', sans-serif" <?php selected($global_font, "'Roboto', sans-serif"); ?>>Roboto</option>
+                    <option value="'Open Sans', sans-serif" <?php selected($global_font, "'Open Sans', sans-serif"); ?>>Open Sans</option>
+                    <option value="'Lato', sans-serif" <?php selected($global_font, "'Lato', sans-serif"); ?>>Lato</option>
+                    <option value="'Montserrat', sans-serif" <?php selected($global_font, "'Montserrat', sans-serif"); ?>>Montserrat</option>
                 </select>
             </div>
             <div class="saas-form-group" style="margin: 0; flex: 1;">

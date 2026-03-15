@@ -22,9 +22,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_school'])) {
         wp_die('Security check failed');
     }
 
+    // Handle School Logo Upload
+    $school_logo_url = esc_url_raw($_POST['school_logo']);
+    if (!empty($_FILES['school_logo_file']['name'])) {
+        $uploaded_file = school_id_card_maker_handle_image_upload($_FILES['school_logo_file']);
+        if (!is_wp_error($uploaded_file)) {
+            $school_logo_url = $uploaded_file['url'];
+        } else {
+            echo '<div class="saas-notice saas-notice-error"><p>' . esc_html($uploaded_file->get_error_message()) . '</p></div>';
+        }
+    }
+
     $data = array(
         'school_name'    => sanitize_text_field($_POST['school_name']),
-        'school_logo'    => esc_url_raw($_POST['school_logo']),
+        'school_logo'    => $school_logo_url,
         'school_address' => sanitize_textarea_field($_POST['school_address']),
         'school_contact' => sanitize_text_field($_POST['school_contact']),
         'school_email'   => sanitize_email($_POST['school_email']),
@@ -96,7 +107,7 @@ if ($action === 'list') {
         </h1>
 
         <div class="saas-card" style="max-width: 600px;">
-            <form method="post" action="">
+            <form method="post" action="" enctype="multipart/form-data">
                 <?php wp_nonce_field('save_school_action', 'school_nonce'); ?>
 
                 <div class="saas-form-group">
@@ -105,8 +116,15 @@ if ($action === 'list') {
                 </div>
 
                 <div class="saas-form-group">
-                    <label>School Logo URL</label>
-                    <input type="url" name="school_logo" value="<?php echo esc_attr($school->school_logo ?? ''); ?>" class="saas-input" placeholder="https://...">
+                    <label>School Logo</label>
+                    <?php if (!empty($school->school_logo)) : ?>
+                        <div style="margin-bottom: 10px;">
+                            <img src="<?php echo esc_url($school->school_logo); ?>" style="max-width: 150px; max-height: 80px; object-fit: contain; border: 1px solid #ccc; padding: 4px; border-radius: 4px; background: #fff;">
+                        </div>
+                    <?php endif; ?>
+                    <input type="file" name="school_logo_file" accept="image/jpeg,image/png,image/webp" class="saas-input" style="padding: 6px;">
+                    <input type="hidden" name="school_logo" value="<?php echo esc_attr($school->school_logo ?? ''); ?>">
+                    <p class="description" style="margin-top: 4px; font-size: 12px; color: var(--saas-text-muted);">Upload a new logo (PNG, JPG, WebP). Existing URL will be overwritten if a file is uploaded.</p>
                 </div>
 
                 <div class="saas-form-group">

@@ -18,10 +18,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_student_form']
         wp_die('Unauthorized');
     }
 
+    // Handle Student Photo Upload
+    $student_photo_url = esc_url_raw($_POST['student_photo']);
+    if (!empty($_FILES['student_photo_file']['name'])) {
+        $uploaded_file = school_id_card_maker_handle_image_upload($_FILES['student_photo_file']);
+        if (!is_wp_error($uploaded_file)) {
+            $student_photo_url = $uploaded_file['url'];
+        } else {
+            echo '<div class="saas-notice saas-notice-error"><p>' . esc_html($uploaded_file->get_error_message()) . '</p></div>';
+        }
+    }
+
     $data = array(
         'school_id'     => intval($_POST['school_id']),
         'student_name'  => sanitize_text_field($_POST['student_name']),
-        'student_photo' => esc_url_raw($_POST['student_photo']),
+        'student_photo' => $student_photo_url,
         'admission_no'  => sanitize_text_field($_POST['admission_no']),
         'class'         => sanitize_text_field($_POST['class']),
         'section'       => sanitize_text_field($_POST['section']),
@@ -55,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_student_form']
     </h1>
 
     <div class="saas-card">
-        <form method="post" action="">
+        <form method="post" action="" enctype="multipart/form-data">
             <?php wp_nonce_field('save_student_data', 'school_id_card_maker_nonce'); ?>
 
             <div class="saas-grid-2">
@@ -68,9 +79,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_student_form']
                     </div>
 
                     <div class="saas-form-group">
-                        <label for="student_photo">Photo URL</label>
-                        <input name="student_photo" type="url" id="student_photo" value="<?php echo esc_url($student->student_photo ?? ''); ?>" class="saas-input">
-                        <p class="description" style="margin-top: 4px; font-size: 12px; color: var(--saas-text-muted);">Optional: URL to the student's photo.</p>
+                        <label>Student Photo</label>
+                        <?php if (!empty($student->student_photo)) : ?>
+                            <div style="margin-bottom: 10px;">
+                                <img src="<?php echo esc_url($student->student_photo); ?>" style="max-width: 100px; max-height: 100px; border-radius: 4px; border: 1px solid #ccc;">
+                            </div>
+                        <?php endif; ?>
+                        <input type="file" name="student_photo_file" accept="image/jpeg,image/png,image/webp" class="saas-input" style="padding: 6px;">
+                        <input type="hidden" name="student_photo" value="<?php echo esc_url($student->student_photo ?? ''); ?>">
+                        <p class="description" style="margin-top: 4px; font-size: 12px; color: var(--saas-text-muted);">Upload a new photo (PNG, JPG, WebP). Existing URL will be overwritten if a file is uploaded.</p>
                     </div>
 
                     <div class="saas-form-group">
