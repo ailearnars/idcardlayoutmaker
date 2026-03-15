@@ -77,8 +77,91 @@ $student->school_name = get_option('school_id_card_default_school_name', 'Spring
 }
 </style>
 
+<?php
+// Handle saving global typography settings
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_typography'])) {
+    if (isset($_POST['typography_nonce']) && wp_verify_nonce($_POST['typography_nonce'], 'save_typography_action') && current_user_can('manage_options')) {
+        update_option('school_id_card_global_font', sanitize_text_field($_POST['global_font']));
+        update_option('school_id_card_global_size', sanitize_text_field($_POST['global_size']));
+        echo '<div class="saas-notice saas-notice-success"><p>Typography settings saved successfully.</p></div>';
+    }
+}
+
+$global_font = get_option('school_id_card_global_font', 'Helvetica, Arial, sans-serif');
+$global_size = get_option('school_id_card_global_size', '11px');
+
+// Strip tags but keep quotes intact for CSS
+$safe_font = wp_strip_all_tags($global_font);
+$safe_size = wp_strip_all_tags($global_size);
+
+// Build CSS var injector for preview
+$preview_style = '<style>.preview-scaler .id-card { font-family: ' . $safe_font . ' !important; } .preview-scaler .id-card table, .preview-scaler .id-card p, .preview-scaler .id-card td { font-size: ' . $safe_size . ' !important; }</style>';
+?>
+
 <div class="wrap saas-wrap">
-    <h1>Template Library</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--saas-border); padding-bottom: 16px; margin-bottom: 24px;">
+        <h1 style="border: none; margin: 0; padding: 0;">Template Library</h1>
+    </div>
+
+    <!-- Typography Controls -->
+    <div class="saas-card" style="margin-bottom: 32px; background: #f9fafb;">
+        <form method="post" action="" style="display: flex; gap: 20px; align-items: flex-end;">
+            <?php wp_nonce_field('save_typography_action', 'typography_nonce'); ?>
+            <div class="saas-form-group" style="margin: 0; flex: 1;">
+                <label>Global Template Font</label>
+                <select name="global_font" class="saas-select" id="preview_font" onchange="updatePreviewTypography()">
+                    <option value="'Helvetica Neue', Helvetica, Arial, sans-serif" <?php selected($global_font, "'Helvetica Neue', Helvetica, Arial, sans-serif"); ?>>Helvetica / Arial</option>
+                    <option value="'Times New Roman', Times, serif" <?php selected($global_font, "'Times New Roman', Times, serif"); ?>>Times New Roman</option>
+                    <option value="'Courier New', Courier, monospace" <?php selected($global_font, "'Courier New', Courier, monospace"); ?>>Courier New</option>
+                    <option value="Tahoma, Geneva, sans-serif" <?php selected($global_font, "Tahoma, Geneva, sans-serif"); ?>>Tahoma</option>
+                    <option value="'Trebuchet MS', Helvetica, sans-serif" <?php selected($global_font, "'Trebuchet MS', Helvetica, sans-serif"); ?>>Trebuchet MS</option>
+                    <option value="'Alice', serif" <?php selected($global_font, "'Alice', serif"); ?>>Alice</option>
+                    <option value="'Roboto', sans-serif" <?php selected($global_font, "'Roboto', sans-serif"); ?>>Roboto</option>
+                    <option value="'Open Sans', sans-serif" <?php selected($global_font, "'Open Sans', sans-serif"); ?>>Open Sans</option>
+                    <option value="'Lato', sans-serif" <?php selected($global_font, "'Lato', sans-serif"); ?>>Lato</option>
+                    <option value="'Montserrat', sans-serif" <?php selected($global_font, "'Montserrat', sans-serif"); ?>>Montserrat</option>
+                </select>
+            </div>
+            <div class="saas-form-group" style="margin: 0; flex: 1;">
+                <label>Global Text Size</label>
+                <select name="global_size" class="saas-select" id="preview_size" onchange="updatePreviewTypography()">
+                    <option value="9px" <?php selected($global_size, "9px"); ?>>Small (9px)</option>
+                    <option value="10px" <?php selected($global_size, "10px"); ?>>Medium (10px)</option>
+                    <option value="11px" <?php selected($global_size, "11px"); ?>>Standard (11px)</option>
+                    <option value="12px" <?php selected($global_size, "12px"); ?>>Large (12px)</option>
+                    <option value="13px" <?php selected($global_size, "13px"); ?>>Extra Large (13px)</option>
+                </select>
+            </div>
+            <div>
+                <button type="submit" name="save_typography" class="saas-btn saas-btn-primary">Save Typography</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function updatePreviewTypography() {
+            const font = document.getElementById('preview_font').value;
+            const size = document.getElementById('preview_size').value;
+
+            const cards = document.querySelectorAll('.preview-scaler .id-card');
+            cards.forEach(card => {
+                card.style.setProperty('font-family', font, 'important');
+
+                const texts = card.querySelectorAll('td, p, span, div');
+                texts.forEach(t => {
+                    // avoid changing header/name sizes which are specifically styled larger
+                    if (!t.classList.contains('school-name') && !t.classList.contains('name')) {
+                        t.style.setProperty('font-size', size, 'important');
+                    }
+                });
+            });
+        }
+
+        // Run on load
+        document.addEventListener("DOMContentLoaded", updatePreviewTypography);
+    </script>
+
+    <?php echo $preview_style; ?>
 
     <?php if (!empty($custom_horizontal) || !empty($custom_vertical)): ?>
     <div style="margin-top: 32px; background: #e0e7ff; padding: 20px; border-radius: 8px; border: 1px solid #c7d2fe;">

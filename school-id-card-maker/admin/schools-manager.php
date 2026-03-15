@@ -22,9 +22,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_school'])) {
         wp_die('Security check failed');
     }
 
+    $logo_url = esc_url_raw($_POST['school_logo']);
+    if (!empty($_FILES['school_logo_upload']['name'])) {
+        $uploaded_url = school_id_card_maker_handle_image_upload($_FILES['school_logo_upload']);
+        if ($uploaded_url) {
+            $logo_url = $uploaded_url;
+        }
+    }
+
     $data = array(
         'school_name'    => sanitize_text_field($_POST['school_name']),
-        'school_logo'    => esc_url_raw($_POST['school_logo']),
+        'school_logo'    => $logo_url,
         'school_address' => sanitize_textarea_field($_POST['school_address']),
         'school_contact' => sanitize_text_field($_POST['school_contact']),
         'school_email'   => sanitize_email($_POST['school_email']),
@@ -96,7 +104,7 @@ if ($action === 'list') {
         </h1>
 
         <div class="saas-card" style="max-width: 600px;">
-            <form method="post" action="">
+            <form method="post" action="" enctype="multipart/form-data">
                 <?php wp_nonce_field('save_school_action', 'school_nonce'); ?>
 
                 <div class="saas-form-group">
@@ -105,8 +113,15 @@ if ($action === 'list') {
                 </div>
 
                 <div class="saas-form-group">
-                    <label>School Logo URL</label>
-                    <input type="url" name="school_logo" value="<?php echo esc_attr($school->school_logo ?? ''); ?>" class="saas-input" placeholder="https://...">
+                    <label>School Logo (Upload)</label>
+                    <input type="file" name="school_logo_upload" accept="image/*" class="saas-input" style="padding: 8px;">
+                    <p class="description" style="margin-top: 4px; font-size: 12px; color: var(--saas-text-muted);">Upload a logo. It will be automatically converted to WebP.</p>
+                    <?php if (!empty($school->school_logo)): ?>
+                        <div style="margin-top: 10px;">
+                            <img src="<?php echo esc_url($school->school_logo); ?>" alt="Current Logo" style="max-height: 80px; max-width: 100%; border: 1px solid var(--saas-border); border-radius: 4px;">
+                        </div>
+                    <?php endif; ?>
+                    <input type="hidden" name="school_logo" value="<?php echo esc_attr($school->school_logo ?? ''); ?>">
                 </div>
 
                 <div class="saas-form-group">
